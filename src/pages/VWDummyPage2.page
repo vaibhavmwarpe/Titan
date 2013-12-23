@@ -1,0 +1,10 @@
+<apex:page >
+    <apex:pageBlock title="To show PanelBar :">       
+        <apex:panelBar >
+            <apex:panelBarItem label="Item 1">data 1</apex:panelBarItem>
+            <apex:panelBarItem label="Item 2">data 2</apex:panelBarItem>
+            <apex:panelBarItem label="Item 3">data 3</apex:panelBarItem>
+        </apex:panelBar>
+    </apex:pageBlock>
+
+</apex:page>

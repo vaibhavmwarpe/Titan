@@ -1,0 +1,30 @@
+<apex:page controller="VFWorkbookPageCon" standardStylesheets="false" >
+    <apex:pageBlock >
+    
+        <apex:outputText value="Hello {!$User.FirstName} {!$User.LastName}" style="font-size:16px;font-weight:bold"></apex:outputText><hr/>
+        <apex:pageBlockSection rendered="false">
+            <p>The year today is {! YEAR(TODAY())}</p>
+            <p>Tomorrow will be day number {! DAY(TODAY() + 1)}</p>
+            <p>Lets find a maximum: {! MAX(1,2,3,4,5,6,5,4,3,2,1)} </p>
+            <p>The square root of 49 is {! SQRT(49)}</p>
+            <p>Is it true? {! CONTAINS('salesforce.com', 'force.com')}</p><hr/>
+        </apex:pageBlockSection>     
+        
+        <apex:outputLink value="http://developer.force.com/" title="SF Dev">SF Dev Site</apex:outputLink><br/><br/>
+        <apex:outputLink value="{! URLFOR($Action.Account.new)}">Create Account</apex:outputLink><br/><br/>
+        <apex:outputLink value="{! URLFOR($Action.Account.new)}">Create</apex:outputLink><br/><br/>
+        <chatter:feed entityId="0039000000JUE7WAAX"/>
+        <apex:pageBlockTable value="{!allContacts}" var="tempContact">
+
+            <apex:column headerValue="Full Name">
+                <apex:outputLink value="/{!tempContact.Id}">{!tempContact.Name}</apex:outputLink>
+            </apex:column>
+            <apex:column value="{!tempContact.LastName}"/>
+            <apex:column value="{!tempContact.email}"/>
+            <apex:column value="{!tempContact.Phone}"/>
+                         
+        </apex:pageBlockTable>
+        <apex:detail />
+    </apex:pageBlock>
+
+</apex:page>

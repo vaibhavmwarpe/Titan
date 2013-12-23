@@ -1,0 +1,29 @@
+<apex:page controller="VWFormCompositionCon">
+    
+    <apex:panelGrid columns="2" >
+        <apex:outputPanel >
+            <apex:form >
+                <apex:outputLabel for="nametxbId" value="Enter your name: "></apex:outputLabel>
+                <apex:inputText value="{!name}"/>
+                <br/>
+                <apex:outputLabel for="genderId" value="Plese select your gender: " style="float:left"></apex:outputLabel>
+                <apex:selectRadio value="{!selectedGender}" id="genderId" style="float:left;margin-top:0px">
+                    <apex:selectOption itemValue="male" itemLabel="Male"></apex:selectOption>
+                    <apex:selectOption itemValue="female" itemLabel="Female"></apex:selectOption>
+                </apex:selectRadio>
+                <apex:insert name="ageSection"/>
+                <br/>
+                <apex:insert name="mealSection"></apex:insert><br/>
+                <p>That is all for this time. We will talk to you soon..
+                </p>
+                
+                       
+                <apex:commandButton action="{!save}" rerender="null" value="Save"/> 
+                <apex:commandButton action="{!cancel}" rerender="null" value="Cancel"/> 
+            </apex:form>      
+        </apex:outputPanel>
+
+        <apex:include pageName="VWAllJSPage" rendered="true"/>
+    </apex:panelGrid>
+    
+</apex:page>

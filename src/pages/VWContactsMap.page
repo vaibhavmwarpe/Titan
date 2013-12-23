@@ -1,0 +1,76 @@
+<apex:page standardController="Contact" extensions="VWContactsMapController" showHeader="false" sidebar="false">
+
+    <head>
+        <style>
+            div #map_canvas { height: 500px; }
+        </style>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    </head>
+    <apex:pageBlock >        
+        <div id="map_canvas" />
+    </apex:pageBlock>
+    
+    <script type="text/javascript">       
+        
+        var contacts = {!contactsJson};    // Array of contact data, some of them might have lat/long info, some well have to geocode client side
+        var coords = [];                   // Just the latitude longitude for each contact
+        var requestCounter = 0;
+
+        var markers = [];                  // Red things we pin to the map.
+        var balloon = new google.maps.InfoWindow(); // Comic-like baloon that floats over markers.
+		        
+        function geocodeClientSide() { 
+            
+            for(var i = 0; i < contacts.length; i++) {
+                if(contacts[i].Location__Latitude__s != null && contacts[i].Location__Longitude__s != null) {
+                    coords.push(new google.maps.LatLng(contacts[i].Location__Latitude__s, contacts[i].Location__Longitude__s));
+                } else {
+                    ++requestCounter;
+                    var address = contacts[i].MailingStreet + ' ' + contacts[i].MailingCity + ' ' + contacts[i].MailingCountry;
+                    var geocoder = new google.maps.Geocoder();
+                    if (geocoder) {
+                        geocoder.geocode({'address':address}, function (results, status) {
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                coords.push(results[0].geometry.location);
+                            } else {
+                                var pTag = document.createElement("p");
+                                pTag.innerHTML = status;
+                                document.getElementById('log').appendChild(pTag);
+                            }
+                            if(--requestCounter == 0) {
+                                drawMap();
+                            }
+                        });
+                    }
+                }
+            }
+            // It could be the case that all was geocoded on server side (or simply retrieved from database).
+            // So if we are lucky - just proceed to drawing the map.
+            if(requestCounter == 0) {
+                drawMap();
+            }
+        }
+    
+        function drawMap(){
+            var mapOptions = {
+                center: coords[0],
+                zoom: 5,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map_canvas"),  mapOptions);
+    
+            for(var i = 0; i < coords.length; ++i){
+                var marker = new google.maps.Marker({map: map, position: coords[i], title:contacts[i].Name, zIndex:i});
+    
+                google.maps.event.addListener(marker, 'click', function() {
+                    var index = this.zIndex;
+                    balloon.content = '<b>'+contacts[index].Name + '</b>' + contacts[index].Account.Name + '' + contacts[index].Email;
+                    balloon.open(map,this);
+                });
+                markers.push(marker);
+            }
+        }
+    
+        geocodeClientSide();
+    </script>
+</apex:page>

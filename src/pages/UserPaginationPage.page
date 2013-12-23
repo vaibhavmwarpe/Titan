@@ -1,0 +1,13 @@
+<apex:page standardController="User" recordSetVar="currentUser" extensions="UserPagination">
+    <apex:pageBlock title="Company Users">
+        <apex:form id="theForm">
+            <apex:pageblockSection >
+        
+            </apex:pageblockSection>
+            <apex:panelGrid columns="2">
+                <apex:commandButton action="{!previous}" value=" Previous "> </apex:commandButton>
+                <apex:commandButton action="{!next}" value=" Next "> </apex:commandButton>
+            </apex:panelGrid>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

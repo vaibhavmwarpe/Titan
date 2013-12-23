@@ -1,0 +1,30 @@
+<apex:page standardController="Account">
+    <style>
+        .activeTabCls{
+            color: BLUE;
+            background-color: WHITE;            
+        }
+        .inactiveTabCls{
+            color: BLACK;
+            background-color: LIGHTGRAY;        
+        }        
+    </style>
+  
+    
+    
+
+    <apex:tabPanel id="tabPanelId" activeTabClass="activeTabCls" inactiveTabClass="inactiveTabCls" title="Tab Panel" switchType="Client"> <!--value="{!TabInFocus}" for custom controller-->
+        <apex:tab id="accDetailsTab" label="Account Details" name="Account">
+            <apex:detail relatedList="false" inlineEdit="true"/>
+        </apex:tab>
+        
+        <apex:tab id="accContactsTab" label="Contacts" name="Contacts">
+            <apex:relatedList title="Contacts" subject="{!account}" list="contacts" pageSize="2"/>
+        </apex:tab>
+        
+        <apex:tab id="accOppsTab" label="Opportunities" name="Opportunities">
+            <apex:relatedList title="Opportunities" subject="{!account}" list="opportunities"/>
+        </apex:tab>
+        
+    </apex:tabPanel>
+</apex:page>

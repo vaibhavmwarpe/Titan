@@ -1,0 +1,31 @@
+<apex:page controller="VWFormCompositionCon">
+
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:pageBlock title="Your details">            
+        <apex:composition template="VWFormComposition">
+            <apex:define name="mealSection">
+                <apex:outputLabel for="mealOptionsId" value="Plese provide meal preference: "></apex:outputLabel>                
+                <apex:selectCheckboxes value="{!selectedMealOpt}">
+                    <apex:selectOptions value="{!availableMealOpts}"/>
+                </apex:selectCheckboxes>          
+            </apex:define>
+            <br/>
+                                       
+            <apex:define name="ageSection">
+                <apex:outputLabel for="ageOptionsId" value="Plese select your age range: " style="float:left;"></apex:outputLabel> 
+                <apex:selectList value="{!selectedAge}" id="ageOptionsId">
+                    <apex:selectOptions value="{!ageRanges}"/>
+                </apex:selectList>
+            </apex:define>     
+        </apex:composition>    
+    </apex:pageBlock>
+    
+    <apex:pageBlock title="To show PanelBar :">       
+        <apex:panelBar >
+            <apex:panelBarItem label="Item 1">data 1</apex:panelBarItem>
+            <apex:panelBarItem label="Item 2">data 2</apex:panelBarItem>
+            <apex:panelBarItem label="Item 3">data 3</apex:panelBarItem>
+        </apex:panelBar>
+    </apex:pageBlock>
+
+</apex:page>

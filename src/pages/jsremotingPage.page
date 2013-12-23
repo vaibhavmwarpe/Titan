@@ -1,0 +1,52 @@
+<apex:page controller="JSRemotingCon">
+    <script type="text/javascript">
+        function getAccountJS() {
+            var accountNameJS = document.getElementById('accountname').value;
+            
+           
+            Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.JSRemotingCon.getAccount}', 
+                    accountNameJS, 
+                    function(result, event){                        
+                        if (event.status) {             
+                            document.getElementById('remoteAcctId').innerHTML = result.Id;  
+                            document.getElementById('remoteAcctName').innerHTML =  result.Name;                                    
+                            
+                        } else if (event.type === 'exception') {
+                           
+                        } else {
+                            
+                        }
+                    }, 
+                    {escape: true}
+                );
+        }
+        
+        function setOutputTextToHi(){
+            document.getElementById('messageInput').value = 'Hi';
+        }
+        </script>
+        
+    <input id="accountname" type="text"/>
+
+
+    <button onclick="getAccountJS();">Get Account</button><br/><br/>
+    <button onclick="setOutputTextToHi();">Show Message</button><br/><br/>
+    <input id="messageInput" type="text"/>
+    
+    <apex:outputText id="AccountName" ></apex:outputText>
+    <apex:pageblock id="theBlock">
+        <apex:pageblocksection columns="2" id="pbs">
+
+            <apex:pageblocksectionitem id="pbsi1">
+                 <span id="remoteAcctId"/>
+            </apex:pageblocksectionitem>
+
+            <apex:pageblocksectionitem id="pbsi2">
+                <span id="remoteAcctName"/>
+            </apex:pageblocksectionitem>
+
+        </apex:pageblocksection>
+    </apex:pageblock>
+
+</apex:page>

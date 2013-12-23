@@ -1,0 +1,37 @@
+<apex:page controller="TwilioSMSPageController" tabstyle="User">
+    <apex:form >
+        <apex:pageMessages />
+        <apex:pageBlock title="Twilio SMS">
+            <apex:pageBlockSection title="Outbound SMS" columns="1" >
+                
+                <apex:pageBlockSectionItem >                
+                    <apex:outputLabel >Name:</apex:outputLabel>
+                    <apex:outputText id="contactName" value="{!sfObject[0].Name}" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >                
+                    <apex:outputLabel >Email:</apex:outputLabel>
+                    <apex:outputText id="contactEmail" value="{!sfObject[0].Email}"/>
+                </apex:pageBlockSectionItem>
+            
+                <apex:pageBlockSectionItem >                
+                    <apex:outputLabel for="mobileNumber">Phone Number:</apex:outputLabel>
+                    <apex:inputText id="mobileNumber" value="{!sfObject[0].Phone}" disabled="false" />
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="message">Message:</apex:outputLabel>
+                    <apex:inputTextArea id="message" value="{!message}" style="height:200px" />
+                </apex:pageBlockSectionItem>
+               
+                <apex:outputPanel id="buttonsPanel" style="padding-left:290px">
+                    <apex:commandButton action="{!sendSMS}" value="Send" />
+                    <apex:commandButton action="{!clearMessage}" value="Clear" />
+                    <apex:commandButton action="{!cancel}" value="Cancel" />
+                </apex:outputPanel>
+                
+                                    
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

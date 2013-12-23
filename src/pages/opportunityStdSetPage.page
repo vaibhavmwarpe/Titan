@@ -1,0 +1,12 @@
+<apex:page Controller="OpportunityCon" tabStyle="User">
+    <apex:form >
+        <apex:pageBlock title="Company Opportunities">
+            <apex:pageBlockSection >
+                <apex:pageBlockTable value="{!allOpportunities}" var="currentOpp">
+                    <apex:column ><apex:outputText value="{!currentOpp.id}"/></apex:column>
+                    <apex:column ><apex:outputText value="{!currentOpp.name}"/></apex:column>                    
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

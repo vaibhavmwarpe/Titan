@@ -1,0 +1,11 @@
+<apex:page sidebar="false" showHeader="false">
+    <apex:outputPanel >
+        <apex:image value="https://ap1.salesforce.com/img/seasonLogos/2013_summer_aloha.png"/>
+    </apex:outputPanel>
+    <apex:include pageName="VFTemplatePage"/><br/><br/><br/><br/><br/>
+    
+    <c:VFCustomComponent borderwidth="2" displayName="Switzerland"></c:VFCustomComponent>
+    <c:VFCustomComponent borderwidth="2" displayName="Eupore"></c:VFCustomComponent>
+    <c:VFCustomComponent borderwidth="2" displayName="Australia and New Zealand"></c:VFCustomComponent>
+    <c:VFCustomComponent borderwidth="2" displayName="South Africa"></c:VFCustomComponent>
+</apex:page>

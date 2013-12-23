@@ -1,0 +1,4 @@
+<apex:page controller="VWDeviceDetectionCon">
+
+  <h1>{!userAgent }</h1>
+</apex:page>

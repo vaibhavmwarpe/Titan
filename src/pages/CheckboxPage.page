@@ -1,0 +1,83 @@
+<apex:page controller="Checkbox_Class" Tabstyle="Account">
+    <apex:form >     
+        <apex:pageBlock Title="Accounts with CheckBoxes">
+            <apex:pageBlockSection Title="List of Available Accounts">
+                <apex:dataTable value="{!userwrapperList}" var="tempUser" columnswidth="50px,50px" cellpadding="4" border="1">
+                    <apex:column >
+                        <apex:facet name="header"> <apex:inputCheckbox >
+                            <apex:actionSupport event="onclick" action="{!GetSelected}" onsubmit="checkAll(this)" rerender="Selected_PBS"/>
+                            </apex:inputCheckbox>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!tempUser.selected}" id="checkedone">
+                        <apex:actionSupport event="onclick" action="{!GetSelected}" rerender="Selected_PBS"/></apex:inputCheckbox>
+                    </apex:column>
+                    <apex:column headervalue="User Name" value="{!tempUser.User.Name}" />
+                    
+                    <apex:column >
+                        <apex:facet name="header">Full Name</apex:facet>
+                        <apex:outputLink value="/{!tempUser.User.id}">{!tempUser.User.Name}</apex:outputLink>                
+                    </apex:column>
+            
+                    <apex:column >
+                        <apex:facet name="header">Alias</apex:facet>
+                        <apex:outputText value="{!tempUser.User.Alias}" />
+                    </apex:column>
+                    
+                    <apex:column >
+                        <apex:facet name="header">Username</apex:facet>
+                        <apex:outputText value="{!tempUser.User.Username}"/>
+                    </apex:column>
+        
+                    <apex:column >
+                        <apex:facet name="header">Profile</apex:facet>
+                        <apex:outputText value="{!tempUser.User.ProfileId}"/>
+                    </apex:column>          
+                   
+                    <apex:column >
+                        <apex:facet name="header">UserRole</apex:facet>
+                        <apex:outputText value="{!tempUser.User.UserRoleId}"/>
+                    </apex:column>
+        
+                    <apex:column >
+                        <apex:facet name="header">Active</apex:facet>
+                        <apex:outputField value="{!tempUser.User.isActive}"/>
+                    </apex:column>
+
+                </apex:dataTable>
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection Title="Selected Users" id="Selected_PBS">
+                <apex:dataTable value="{!selectedUsersList}" var="tempSelectedUser" columnswidth="50px,50px" cellpadding="4" border="1">
+                    
+                    <apex:column >
+                        <apex:facet name="header">Name</apex:facet>
+                        <apex:outputText value="{!tempSelectedUser.Name}"/>
+                    </apex:column>          
+                   
+                    <apex:column >
+                        <apex:facet name="header">Profile</apex:facet>
+                        <apex:outputText value="{!tempSelectedUser.ProfileId}"/>
+                    </apex:column>
+        
+                    <apex:column >
+                        <apex:facet name="header">Active</apex:facet>
+                        <apex:outputField value="{!tempSelectedUser.isActive}"/>
+                    </apex:column>                
+
+                </apex:dataTable>
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        function checkAll(cb)
+        {
+            var inputElem = document.getElementsByTagName("input");
+            for(var i=0; i<inputElem.length; i++)
+            {
+                if(inputElem[i].id.indexOf("checkedone")!=-1)
+                inputElem[i].checked = cb.checked;
+            }
+        }
+    </script>
+</apex:page>

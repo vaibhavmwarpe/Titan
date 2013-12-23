@@ -1,0 +1,19 @@
+<apex:page standardController="Account" recordSetVar="accountList" extensions="DynamicCustomizableListHandler">
+    <apex:form >
+        <apex:outputPanel title="List View: ">
+            <apex:outputLabel for="listviewId" value="Please select a list view: "></apex:outputLabel>        
+            <apex:selectList id="listviewId" value="{!filterId}" multiselect="false" size="1">
+                <apex:actionSupport event="onchange" reRender="accountListsId"/>
+                <apex:selectOptions value="{!listviewoptions}"/>
+            </apex:selectList>
+        </apex:outputPanel>
+        
+        <apex:pageBlock >
+            <apex:outputPanel id="accountListsId">
+                <apex:pageBlockTable value="{!accountList}" var="tempAccount">
+                    <apex:column value="{!tempAccount.name}"/>
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,68 @@
+<apex:page controller="UserWrapperCon">
+   <script>
+       function checkUserList(){
+           showUsers();
+           alert('hi');
+       }
+
+   </script>
+    <apex:form >
+        <apex:pageBlock id="pb" title="User Details">
+        
+        <table>
+            <tr>
+                <td class="labelCol"> Select User View:  </td>
+                
+                <td> 
+                    <apex:selectList value="{!selectedUserOption}" size="1">
+                        <apex:selectOptions value="{!Users}"/>                
+                    </apex:selectList>
+                 </td>
+                 
+                 <td>   
+                    <apex:selectList value="{!selectedUserRole}" size="1" >
+                        <apex:selectOptions value="{!UsersRole}"/>                
+                    </apex:selectList> 
+                 </td>
+                 
+                 <td>   
+                     <apex:selectList value="{!selectedUserProfile}" size="1" >
+                        <apex:selectOptions value="{!UsersProfile}"/>
+                    </apex:selectList>
+                </td>
+                
+                <td>
+                    <input type= "button" value="Search" onclick="showUsers()" class="btn" />
+                </td>
+            </tr>
+        </table>
+       
+        <apex:outPutPanel >
+            <script>
+                var userli = "{!selectedUserOption}";            
+            </script>    
+           
+            <apex:pageBlockSection columns="2" id="theButtonSection">
+               <apex:panelGrid columns="3">
+                    {!selectedUserOption}
+                   <apex:commandButton value="Activate" action="{!activateUsers}" id="activateButton" rendered="{!selectedUserOption == 'All Inactive Users'}"/>
+                   <apex:commandButton value="Deactivate" action="{!deactivateUsers}" id="deactivateButton" rendered="{!selectedUserOption == 'All Active Users'}" />
+               </apex:panelGrid>                   
+            </apex:pageBlockSection> 
+            <apex:pageBlockSection id="userTable">
+                <apex:pageBlockTable value="{!allUsers}" var="currentUser" >
+                    <apex:column headerValue="Select"><apex:inputCheckbox value="{!currentUser.selected}"/></apex:column>                                             
+                    <apex:column headerValue="Name"><apex:outPutField value="{!currentUser.user.Name}"/></apex:column>
+                    <apex:column headerValue="Profile"> <apex:outPutField value="{!currentUser.user.Profile.Name}"/></apex:column>
+                    <apex:column headerValue="Role" > <apex:outPutField value="{!currentUser.user.UserRole.Name}"/></apex:column>
+                    <apex:column headerValue="Email" > <apex:outPutField value="{!currentUser.user.Email}"/> </apex:column>
+                    <apex:column headerValue="IsActive"><apex:inputField value="{!currentUser.user.IsActive}" /> </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection> 
+         </apex:outPutPanel>
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="showUsers" action="{!viewUsersList}" reRender="userTable,theButtonSection"/>  
+    </apex:form>
+    
+</apex:page>

@@ -1,0 +1,23 @@
+<apex:page sidebar="false" showHeader="false">
+   <!--apex:includeScript value="{!$Resource.jquery1_9_1}"-->                           <!-- http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js-->
+    <apex:includeScript value="{!$Resource.jqueryui_1_10_2_custom}"/>                <!-- http://code.jquery.com/ui/1.10.2/jquery-ui.js-->   
+       <script type="text/javascript" src="http://code.jquery.com/jquery-1.3.2.min.js"></script>  
+       <script type="text/javascript" src="https://raw.github.com/cowboy/jquery-postmessage/master/jquery.ba-postmessage.js"></script> 
+    <script>  
+         $(function() {
+         
+             function copyNumberJS(){
+                //var sfInstance = '{!LEFT($Api.Partner_Server_URL_260, FIND( '/services', $Api.Partner_Server_URL_260))}';   
+                //alert('====asd====' );        
+                $.postMessage(
+                  'hello',
+                  'https://c.ap1.visual.force.com/apex/testParentWindowVF',
+                  parent
+                );            
+            } 
+        });
+    </script>
+    
+    Phone Number:<input type="text" id="phoneNumberTextId"></input>
+    <button onclick="copyNumberJS()">Copy Number</button> 
+</apex:page>

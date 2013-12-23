@@ -1,0 +1,99 @@
+<apex:page controller="SalesTwilioCallPageController">
+
+    <script type="text/javascript" src="//static.twilio.com/libs/twiliojs/1.1/twilio.min.js"></script>
+     
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>
+    
+    <!--link href="http://static0.twilio.com/packages/quickstart/client.css"
+    type="text/css" rel="stylesheet" -->
+    
+    <script type="text/javascript">
+    
+    $(document).ready(function(){
+        Twilio.Device.setup("{!token}", {debug: true});
+    
+        Twilio.Device.ready(function (device) {
+            $("#log").text("Ready");
+        });
+        
+        Twilio.Device.error(function (error) {
+            $("#log").text("Error: " + error.message);
+        });
+        
+        Twilio.Device.connect(function (conn) {
+            $("#log").text("Successfully established call");
+        });
+        
+        Twilio.Device.disconnect(function (conn) {
+            $("#log").text("Call ended");
+            window.location.reload(true);
+        });
+        
+        /* Listen for incoming connections */
+        Twilio.Device.incoming(function (conn) {
+            $("#log").text("Incoming connection from " + conn.parameters.From);
+            // accept the incoming connection and start two-way audio
+            var r=confirm('Accept incoming call from ' + conn.parameters.From + '?');
+            if (r==true) {
+                  connection=conn;
+                  conn.accept();
+            } else {
+                  Twilio.Device.disconnectAll();
+            }
+            
+        });
+        
+        $.each(['0','1','2','3','4','5','6','7','8','9','star','pound'], function(index, value) {
+            $('#button' + value).click(function(){
+                alert(value);
+                //alert('asdf' + $('#tocall').val());
+                //$('#tocall').val($('#tocall').val()  + value);
+            });
+        });
+        
+        function call() {
+            Twilio.Device.connect();
+        }
+        
+        function hangup() {
+            Twilio.Device.disconnectAll();
+        }
+        
+        });
+    </script>
+    
+    
+    <div id="log">Loading Please Wait...</div>    
+    <input type="text" id="tocall" name="number" placeholder="Enter a phone number to call" value=""></input><br/>
+    
+            <div id="dialpad">
+        <table>
+            <tr>
+                <td><input type="button" value="1" id="button1"/></td>
+                <td><input type="button" value="2" id="button2"/></td>
+                <td><input type="button" value="3" id="button3"/></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="4" id="button4"/></td>
+                <td><input type="button" value="5" id="button5"/></td>
+                <td><input type="button" value="6" id="button6"/></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="7" id="button7"/></td>
+                <td><input type="button" value="8" id="button8"/></td>
+                <td><input type="button" value="9" id="button9"/></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="*" id="buttonstar"/></td>
+                <td><input type="button" value="0" id="button0"/></td>
+                <td><input type="button" value="#" id="buttonpound"/></td>
+            </tr>
+        </table>
+    </div><br/>  
+
+
+    
+    <button class="call" onclick="call();"> Call </button>
+    <button class="hangup" onclick="hangup();"> Hangup </button>
+
+</apex:page>

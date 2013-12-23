@@ -1,0 +1,11 @@
+<apex:page standardController="Contact" extensions="StandardSetGetSelectedIssue" recordSetVar="contacts">
+    
+    <apex:form >
+        <apex:commandButton action="{!sendToAll}" value="Send SMS" />
+    </apex:form>
+    
+    <apex:repeat value="{!StandardSetRecords}" var="r">
+        {!r.id}<br/>
+    </apex:repeat>
+    
+</apex:page>

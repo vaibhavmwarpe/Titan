@@ -1,0 +1,29 @@
+<apex:page controller="testpageCon">
+    <script type="text/javascript" src="//static.twilio.com/libs/twiliojs/1.1/twilio.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"> </script>
+    <script type="text/javascript" src="https://raw.github.com/malsup/corner/master/jquery.corner.js"/>
+    <script>
+        function sendSMSJS(){sendSMSAF();}
+        $(window).on('beforeunload', function(){ //alert('Bye now ')});
+        
+        function showWindowName(){        
+            alert('This window is: ' + window.name);
+        }      
+        alert('This window is: ' + window.name);
+    </script>
+    
+    <apex:form >
+        <apex:actionFunction name="sendSMSAF" action="{!sendSMS}" rerender="resultsDiv"/>
+        <apex:inputText value="{!calleeNumber}" id="calleeNumberId"/>
+        <apex:inputTextarea value="{!smsMessage}" id="smsMessageId"/>
+        
+        <button id="sendSMSId" onclick="showWindowName();">sendSMS</button><br/><br/><hr/>
+        
+        <input id="phId" type="text"/><br/>
+        <button id="getContactId" onclick="showWindowName();">Get Contact</button>   <hr/>     
+        
+    </apex:form>
+    
+    <div id="resultsDiv">{!calleeNumber}{!smsMessage}</div>
+</apex:page>

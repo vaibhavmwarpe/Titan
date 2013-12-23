@@ -1,0 +1,16 @@
+<apex:page standardController="Account" name="account" extensions="VWAccountExtension">
+    <apex:messages />
+    <apex:pagemessages ></apex:pagemessages>
+    <apex:form >
+        <apex:outputPanel >
+            <apex:inputField label="Account Name" value="{!account.name}"/>
+            <apex:inputField label="Type" value="{!account.type}"/><br/><br/>
+            <apex:commandButton action="{!Cancel}" title="Cancel" value="Cancel"/>
+            <apex:commandButton action="{!QuickSave}" title="Save" value="Save" reRender="detailsPanel"/>
+            
+        </apex:outputPanel>
+        <apex:outputPanel id="detailsPanel">
+            <apex:detail />
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

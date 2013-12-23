@@ -1,0 +1,374 @@
+<apex:page controller="SalesTwilioSoftphoneDialerController" sidebar="false" showHeader="true" >
+
+    <script type="text/javascript" src="//static.twilio.com/libs/twiliojs/1.1/twilio.js"></script>    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+    <!--apex:includeScript value="{!$Resource.jquerycorner}"-->
+    <!--apex:includeScript value="{!$Resource.bPopUpJS}"-->
+    
+    <script type="text/javascript" src="https://raw.github.com/malsup/corner/master/jquery.corner.js"></script>
+    <script>(function(b){b.fn.bPopup=function(u,C){function v(){a.modal&&b('<div class="b-modal '+d+'"></div>').css({backgroundColor:a.modalColor,position:"fixed",top:0,right:0,bottom:0,left:0,opacity:0,zIndex:a.zIndex+m}).appendTo(a.appendTo).fadeTo(a.speed,a.opacity);A();c.data("bPopup",a).data("id",d).css({left:"slideIn"===a.transition?-1*(j+h):n(!(!a.follow[0]&&p||f)),position:a.positionStyle||"absolute",top:"slideDown"===a.transition?-1*(k+h):q(!(!a.follow[1]&&r||f)),"z-index":a.zIndex+m+1}).each(function(){a.appending&&b(this).appendTo(a.appendTo)});D(!0)}function s(){a.modal&&b(".b-modal."+c.data("id")).fadeTo(a.speed,0,function(){b(this).remove()});D();return!1}function E(g){var b=g.width(),d=g.height();a.contentContainer.css({height:d,width:b});d<=c.height()&&(d=c.height());b<=c.width()&&(b=c.width());t=c.outerHeight(!0);h=c.outerWidth(!0);a.contentContainer.css({height:"auto",width:"auto"});A();c.dequeue().animate({left:n(!(!a.follow[0]&&p||f)),top:q(!(!a.follow[1]&&r||f)),height:d,width:b},250,function(){g.show();w=B()})}function D(b){switch(a.transition){case "slideIn":c.show().animate({left:b?n(!(!a.follow[0]&&p||f)):-1*(j+h)},a.speed,a.easing,function(){x(b)});break;case "slideDown":c.show().animate({top:b?q(!(!a.follow[1]&&r||f)):-1*(k+t)},a.speed,a.easing,function(){x(b)});break;default:b?c.fadeIn(a.speed,function(){x(b)}):c.stop().fadeOut(a.speed,a.easing,function(){x(b)})}}function x(g){g?(e.data("bPopup",m),c.delegate(".bClose, ."+a.closeClass,"click."+d,s),a.modalClose&&b(".b-modal."+d).css("cursor","pointer").bind("click",s),!F&&(a.follow[0]||a.follow[1])&&e.bind("scroll."+d,function(){w&&c.dequeue().animate({left:a.follow[0]?n(!f):"auto",top:a.follow[1]?q(!f):"auto"},a.followSpeed,a.followEasing)}).bind("resize."+d,function(){if(w=B())A(),c.dequeue().each(function(){f?b(this).css({left:j,top:k}):b(this).animate({left:a.follow[0]?n(!0):"auto",top:a.follow[1]?q(!0):"auto"},a.followSpeed,a.followEasing)})}),a.escClose&&y.bind("keydown."+d,function(a){27==a.which&&s()}),l(C)):(a.scrollBar||b("html").css("overflow","auto"),b(".b-modal."+d).unbind("click"),y.unbind("keydown."+d),e.unbind("."+d).data("bPopup",0<e.data("bPopup")-1?e.data("bPopup")-1:null),c.undelegate(".bClose, ."+a.closeClass,"click."+d,s).data("bPopup",null).hide(),l(a.onClose),a.loadUrl&&(a.contentContainer.empty(),c.css({height:"auto",width:"auto"})))}function n(a){return a?j+y.scrollLeft():j}function q(a){return a?k+y.scrollTop():k}function l(a){b.isFunction(a)&&a.call(c)}function A(){var b;r?b=a.position[1]:(b=((window.innerHeight||e.height())-t)/2-a.amsl,b=b<z?z:b);k=b;j=p?a.position[0]:((window.innerWidth||e.width())-h)/2;w=B()}function B(){return(window.innerHeight||e.height())>c.outerHeight(!0)+z&&(window.innerWidth||e.width())>c.outerWidth(!0)+z}b.isFunction(u)&&(C=u,u=null);var a=b.extend({},b.fn.bPopup.defaults,u);a.scrollBar||b("html").css("overflow","hidden");var c=this,y=b(document),e=b(window),F=/OS 6(_\d)+/i.test(navigator.userAgent),z=20,m=0,d,w,r,p,f,k,j,t,h;c.close=function(){a=this.data("bPopup");d="__b-popup"+e.data("bPopup")+"__";s()};return c.each(function(){if(!b(this).data("bPopup"))if(l(a.onOpen),m=(e.data("bPopup")||0)+1,d="__b-popup"+m+"__",r="auto"!==a.position[1],p="auto"!==a.position[0],f="fixed"===a.positionStyle,t=c.outerHeight(!0),h=c.outerWidth(!0),a.loadUrl)switch(a.contentContainer=b(a.contentContainer||c),a.content){case "iframe":var g=b('<iframe class="b-iframe" scrolling="no" frameborder="0"></iframe>');g.appendTo(a.contentContainer);t=c.outerHeight(!0);h=c.outerWidth(!0);v();g.attr("src",a.loadUrl);l(a.loadCallback);break;case "image":v();b("<img />").load(function(){l(a.loadCallback);E(b(this))}).attr("src",a.loadUrl).hide().appendTo(a.contentContainer);break;default:v(),b('<div class="b-ajax-wrapper"></div>').load(a.loadUrl,a.loadData,function(){l(a.loadCallback);E(b(this))}).hide().appendTo(a.contentContainer)}else v()})};b.fn.bPopup.defaults={amsl:50,appending:!0,appendTo:"body",closeClass:"b-close",content:"ajax",contentContainer:!1,easing:"swing",escClose:!0,follow:[!0,!0],followEasing:"swing",followSpeed:500,loadCallback:!1,loadData:!1,loadUrl:!1,modal:!0,modalClose:!0,modalColor:"#000",onClose:!1,onOpen:!1,opacity:0.7,position:["auto","auto"],positionStyle:"absolute",scrollBar:!0,speed:250,transition:"fadeIn",zIndex:9997}})(jQuery);</script>
+
+    <script type="text/javascript">
+    var callContext= {};
+    
+        $(document).ready(function(){
+            var incomingCallFlag;
+            Twilio.Device.setup("{!token}", {debug: true});
+   
+            Twilio.Device.ready(function (device) {
+                $('#status').text('Ready for call...');
+            });
+            
+            Twilio.Device.incoming(function (conn) {
+                console.log(JSON.stringify(conn));
+                callContext.conn= conn;
+                callContext.timeout = setInterval($.get('www.google.com', function(data) {
+                    console.log('got hits');
+                    })
+                    , 3000
+                );
+                callContext.stopTimeout = setTimeout(
+                    function (){
+                        clearTimeout(callContext.timeout);
+                    }
+                    ,60000
+                );
+                //alert('params are:' + JSON.stringify(conn.parameters) );
+                //$('#status').text('Accepted incoming call from ' +conn.parameters.From );
+                if (confirm('Accepted incoming call from ' +conn.parameters.From )){ 
+                    
+                    conn.accept(); 
+                    
+                    
+                } else {
+                    conn.reject();    
+                }    
+                     
+               
+            });
+            
+            
+            Twilio.Device.offline(function (device) {
+                $('#status').text('Offline');
+            });
+            
+            Twilio.Device.error(function (error) {
+                $('#status').text(error);
+            });
+            
+            Twilio.Device.connect(function (conn) {
+                $('#status').text("Calling...{!recordName}");
+                
+            });
+            
+            Twilio.Device.disconnect(function (conn) {
+                $('#status').text("Call ended");
+                clearNumber();
+                window.location.reload();
+            });
+            
+            Twilio.Device.presence(function(presenceEvent) {
+                $('#presenceDiv').text("Presence Event: " + presenceEvent.from + " " + presenceEvent.available);
+            });
+            
+            
+            $.each(['0','1','2','3','4','5','6','7','8','9','star','pound'], function(index, value) {
+                $('#button' + value).click(function(){
+                    $("input[id$='tocall']").val($("input[id$='tocall']").val() + value);
+                });
+            });
+            
+             $("#dialpad9dots").click(function () {
+                //alert('OK');                 
+                $("#dialpad").slideToggle("slow");
+                //$("#messageDiv").unslideToggle("slow");
+            });
+            
+             $("#showsmsid").click(function () {
+                //alert('OK');                 
+                $("#messageDiv").slideToggle("slow");
+                //$("#dialpad").unslideToggle("slow");
+            });
+          
+            $("#NandAtt").click(function(){
+            // Open the Notes Link only When phone section is not empty
+                if($("input[id$='tocall']").val()!="")
+                    $("#Notediv").slideToggle("slow");
+                if($("#Notediv").dialog("open"))
+                    $("#Notediv").slideToggle("slow");
+            });
+            
+            $( "#softphone" ).corner(); 
+            $( "#messageDiv" ).corner();             
+            $("input").corner();              
+
+            
+        });
+        
+        function allowIncomingJS(){            
+            regenerateTokenAF();
+        }
+        
+        function blinking(elm) {
+            timer = setInterval(blink, 1000);
+            function blink() {
+                elm.fadeOut(400, function() {
+                   elm.fadeIn(400);
+                });
+            }
+        }
+        
+        function callNow() {
+            // get the phone number to connect the call to
+            params = {"PhoneNumber": $("#tocall").val()};
+            
+            //Twilio.Device.connect(params);
+        }
+        function hangup() {
+            //Twilio.Device.disconnect();
+            Twilio.Device.disconnectAll();
+            hangupAF();
+        }
+        
+        function clearNumber(){
+            $("input[id$='tocall']").val('');        
+        }
+        
+        function call() {
+            // get the phone number to connect the call to
+                
+           var v = $("input[id$='tocall']").val();
+           params = {"PhoneNumber": $("input[id$='tocall']").val()};
+           if(v == '')
+              alert('please enter the number');
+           else{    
+            //   alert('calling.. ' + v);
+               Twilio.Device.connect(params);
+               createRecordLinkAF($("input[id$='tocall']").val());
+            }
+        }
+        
+        function popMeUP(){
+            //alert('popping up');
+          //  $("dialog-confirm").bPopup();
+            $( "#softphone" ).bPopup();
+          }
+              
+        
+        function closeSoftphone(){            
+            closeSPAF();
+        }
+        /*function unregister(){            
+            unregisterAF();
+        }*/
+        function mute(){            
+            //closeSPAF();
+        }
+        function sendSMSJS(){
+           // if($("input[id$='tocall']").val() == ''){
+           //     alert('Haven't Entered Any Text, Please Enter Some Message');
+          //  } else if($("textArea[id$='smsMessageId']").val() == ''){
+         //         alert('Please Enter Recipient's Number')
+         //   }
+        //    else//{                      
+                sendSMSAF($("input[id$='tocall']").val(), $("textArea[id$='smsMessageId']").val());
+                alert('Message has been submitted successfully');
+                $("textArea[id$='smsMessageId']").val('');//}
+              //  $("input[id$='tocall']").val('');
+            
+        }
+        
+        function NotesJS(){
+            if($("input[id$='tocall']").val()==""){
+                alert("Enter Some Phone Number");
+            }
+            else if($("input[id$='notestitle']").val()==""){
+                alert("Please Give Some Title To Notes");
+            }
+            else if($( "textArea[id$='notesbody']").val()==""){
+                alert("Enter Some Notes");
+            }
+            else{        
+                var confir1 = confirm("are you sure want to save this note");
+                if(confir1){
+                     alert($( "textArea[id$='notesbody']").val());
+                     alert($("input[id$='notestitle']").val())
+                     saveNoteAF($("input[id$='notestitle']").val(), $("textArea[id$='notesbody']").val());
+                     $("input[id$='notestitle']").val('');
+                     $( "textArea[id$='notesbody']").val('');    
+                 }
+                else{
+                    alert("Note not saved");
+                }
+              $("input[id$='notestitle']").val('');
+              $( "textArea[id$='notesbody']").val('');  
+             }
+           }
+               
+        
+         $(function() {
+            $( "#softphone" ).draggable();
+         });
+         
+        window.onload = function(){ popMeUP(); };
+     
+        
+    </script>
+    
+    <apex:form >
+    
+        <apex:pageMessages id="pgMsg"></apex:pageMessages>
+                <apex:actionFunction name="regenerateTokenAF" action="{!regenerateCapabilityToken}"/>
+        <apex:actionFunction name="hangupAF" action="{!hangupAction}"/>
+        <apex:actionFunction name="closeSPAF" action="{!closeSPAction}"/>  
+        <!--apex:actionFunction name="unregisterAF" action="{!unregisterAction}"-->        
+        <apex:actionFunction name="sendSMSAF" action="{!sendSMS}" rerender="softphone">
+            <apex:param name="calleeNumParam" value="" assignTo="{!phoneNumber}"/>
+            <apex:param name="smsMessage" value="" assignTo="{!smsMessage}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="saveNoteAF" action="{!upload}" rerender="">
+            <apex:param name="title" value="" assignTo="{!notestitle}"/>
+            <apex:param name="notes" value="" assignTo="{!notesbody}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="acceptRecordLinkAF" action="{!acceptRecordLink}" rerender="recordLinkId">
+            <apex:param name="fromNum" value="" assignTo="{!numb}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="createRecordLinkAF" action="{!createRecordLink}" rerender="recordLinkId">
+             <apex:param name="calleeNumParam" value="" assignTo="{!phoneNumber}"/></apex:actionFunction>       
+        <button class="popup" onclick="popMeUP();"> Show SoftPhone </button>   
+        
+        <div id="dialog-confirm" title="Incoming call" style="display: none" >
+            <p>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
+        </div>
+        
+        <!--div id="dialog-confirm" title="Incoming call" style="display: none" /-->
+        
+        <div id="softphone" style="width:240px"  align="center" >
+            
+            <div id="upperDiv" align="right">   
+                <!--button class="unregister" onclick="unregister();" align="left" Unregister button-->                
+                <button class="close" onclick="closeSoftphone();" align="right"> X </button>
+                
+            </div>    <br/>
+                
+            
+            <div id="calldivid" class="spsection"> -------- VOICE --------</div><br/>
+            <div id="status">Offline</div>      <br/>  
+            
+            <apex:inputText id="tocall" value="{!phoneNumber}"/>  <br/>
+            <div id="dialpad9dots" class="spsection9dots" height="25px">
+                <apex:image url="https://c.ap1.content.force.com/servlet/servlet.ImageServer?id=01590000001AZhl&oid=00D90000000irPU&lastMod=1363671560000" width="25px" height="25px"/><br/><br/>  
+            </div>
+
+            <div id="dialpad" style="display: none">
+                <table>
+                    <tr>
+                        <td><input type="button" value="1" id="button1" class="dial-button"/></td>
+                        <td><input type="button" value="2" id="button2" class="dial-button"/></td>
+                        <td><input type="button" value="3" id="button3" class="dial-button"/></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="4" id="button4" class="dial-button"/></td>
+                        <td><input type="button" value="5" id="button5" class="dial-button"/></td>
+                        <td><input type="button" value="6" id="button6" class="dial-button"/></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="7" id="button7" class="dial-button"/></td>
+                        <td><input type="button" value="8" id="button8" class="dial-button"/></td>
+                        <td><input type="button" value="9" id="button9" class="dial-button"/></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="*" id="buttonstar" class="dial-button"  disabled="true"/></td>
+                        <td><input type="button" value="0" id="button0" class="dial-button"/></td>
+                        <td><input type="button" value="#" id="buttonpound" class="dial-button"  disabled="true"/></td>
+                    </tr>
+                </table>
+            </div><br/>
+            
+            <div id="voiceButtonsDiv">
+                <button class="call" onclick="call();" id="callbuttonid">Call<!--apex:image url="https://c.ap1.content.force.com/servlet/servlet.ImageServer?id=01590000001AZiK&oid=00D90000000irPU&lastMod=1363672499000" width="125px" height="25px"--> </button><br/>
+                <button class="hangup" onclick="hangup();" id="hangupbuttonid">Hangup<!--apex:image url="https://c.ap1.content.force.com/servlet/servlet.ImageServer?id=01590000001AZiP&oid=00D90000000irPU&lastMod=1363672527000" width="125px" height="25px"--> </button><br/>
+                
+                <button class="clear" onclick="clearNumber();"> Clear </button>
+                <button class="mute" onclick="mute();" id="mutebuttonid">Mute</button><br/> <br/>   
+                                      
+            </div>     
+            
+            <div id="recordDetailsDiv" > 
+               <apex:outputLink value="{!recordLink}" target="_blank" id="recordLinkId" disabled="{!flag}" rendered="true"><Font color='Red'>Client Details</Font></apex:outputLink><br/> 
+               <!-- apex:outputLink value="{!clientId}" target="_blank" id="clientLinkId"><Font color='Red'>Client Record</Font></apex:outputLink><br/ -->
+               <!--apex:outputText value="Callee Name : {!recordName}" rendered="{!isRecord}" /apex:outputText><br/ --> 
+               <!--apex:outputText value="Callee Number : {!phonenumber}" rendered="{!isRecord}" /apex:outputText><br/--> 
+               <!-- adding from details -->
+               <!-- apex:outputText value="From : {!Caller}" /apex:outputText -->
+            </div>
+            
+        <!--<div id="trueval">
+                <apex:outputLabel >True Value: &nbsp;</apex:outputLabel>
+                <apex:outputText value="{!flag}" rendered="true"/>
+            </div>-->
+            
+          
+            <div id="NandAtt" class="spsection">------ Notes -------</div><br/>
+            <div id="Notediv" style="display: none">
+                  <apex:outputLabel value="Title"/>
+                  <apex:inputText value="{!notestitle}" id="notestitle" required="true"/><br/>
+                  <apex:outputLabel value="Notes" />
+                  <apex:inputTextArea value="{!notesbody}" id="notesbody" style="resize:none;width:150px;"/><br/>
+                  <apex:commandButton value="Save" onclick="NotesJS();" reRender="recordDetailsDiv"/>
+            </div>
+                                         
+            <div id="showsmsid" class="spsection"> -------- SMS --------</div><br/>
+            
+            <div id="messageDiv" style="display: none">
+                <apex:inputTextarea id="smsMessageId" value="{!smsMessage}" rows="4" /><br/>
+                
+                <apex:commandButton value="Send" onclick="sendSMSJS();"/>                  
+                <apex:commandButton action="{!clearMessage}" value="Clear" onclick="clearMsg();"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" />
+            </div>
+          
+           
+        </div>
+    </apex:form>
+   
+    <style>
+        #softphone { background-color:#BDC5F2; width:200px;margin:10px; align:center; min-height: 100px;overflow: hidden;}
+        #tocall { text-color:white; }
+        #draggable { width: 150px; height: 150px; padding: 0.5em; }
+        #messageDiv { background-color:#BDC5F2;width:220px;margin:10px; align:center; height:120px}
+        #recordDetailsDiv {background-color:#BDC5F2; width:200px;margin:10px; align:min-height: 1px;center;overflow: hidden;}
+        
+        .spsection {background-color:#5F77F5;color:white;cursor: pointer;font-weight:bold}
+        .spsection9dots {color:white;cursor: pointer;font-weight:bold}
+        .dial-button { bottom: 0px;  width: 35px; height: 35px;}<!-- background: url('{!$Resource.button_background}') top center no-repeat;font-weight:bold;}-->
+        .call {height: 25px; width: 150px}
+        .hangup {height: 25px; width: 150px}
+        .ui-dialog-titlebar-close {
+           visibility: hidden;
+        }
+        div.ui-dialog-buttonpane button.Accept { background:none; border:0px none;color:green; }
+        div.ui-dialog-buttonpane button.Reject { background:none; border:0px none;color:red; }
+              
+        .ui-dialog, .ui-dialog-content {
+         border:2px ;
+         background-color: #00FFCC !important;
+         color: blue;      
+        }
+        .ui-dialog-titlebar {
+         background-image: none;
+         background-color: #33FF99;         
+        }
+        #ui-dialog-title-dialog {
+         color: yellow !important;
+         text-shadow: none;     
+        }
+        
+    </style>
+    
+    
+</apex:page>

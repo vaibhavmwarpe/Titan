@@ -1,0 +1,21 @@
+<apex:page sidebar="false" showHeader="false">
+    <apex:composition template="VFTemplate">
+        <apex:define name="siteMainBofyLeft">
+            <p>  This is a simple page demonstrating that this text is substituted, and that a banner is created.</p>
+        </apex:define>
+        
+        <apex:define name="siteHeader">
+            <p>  This is a header.</p>
+        </apex:define>
+        
+        <apex:define name="siteFooter">
+            <p>  This is a footer.</p>
+        </apex:define>
+                
+        <apex:define name="siteMainBofyRight">
+            <p>  This is a right body.</p>
+        </apex:define>
+
+    </apex:composition> 
+
+</apex:page>

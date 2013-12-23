@@ -1,0 +1,44 @@
+<apex:page controller="UserStdSetCon">
+    <apex:form >
+        <apex:pageBlock id="pb">
+            <apex:pageBlockSection >
+                <apex:pageBlockTable value="{!allUsers}" var="currentUser">
+                    <apex:column headerValue="Select"><input type="checkbox"></input></apex:column>                
+                                         
+                    <apex:column headerValue="Name"><apex:outPutField value="{!currentUser.Name}"/></apex:column>
+                    <apex:column headerValue="User Profile"> <apex:outPutField value="{!currentUser.Profile.Name}"/></apex:column>
+                    <apex:column headerValue="User Role" > <apex:outPutField value="{!currentUser.UserRole.Name}"/></apex:column>
+                    <apex:column value="{!currentUser.Email}"></apex:column>
+                    <apex:column headerValue="IsActive"><apex:inputField value="{!currentUser.IsActive}" /> </apex:column>
+                </apex:pageBlockTable>
+                </apex:pageBlockSection> 
+                
+                <apex:pageBlockSection > 
+                <apex:panelGrid columns="7">
+                    <apex:commandButton status="fetchStatus" reRender="pb" value="|<" action="{!first}" disabled="{!!hasPrevious}" title="First Page"/>
+                    <apex:commandButton status="fetchStatus" reRender="pb" value="<" action="{!previous}" disabled="{!!hasPrevious}" title="Previous Page"/>
+                    <apex:commandButton status="fetchStatus" reRender="pb" value=">" action="{!next}" disabled="{!!hasNext}" title="Next Page"/>
+                    <apex:commandButton status="fetchStatus" reRender="pb" value=">|" action="{!last}" disabled="{!!hasNext}" title="Last Page"/>
+                    <apex:outputText >{!(pageNumber * size)+1-size}-{!IF((pageNumber * size)>noOfRecords, noOfRecords,(pageNumber * size))} of {!noOfRecords}</apex:outputText>
+                    <apex:commandButton status="fetchStatus" reRender="pb" value="Refresh" action="{!refresh}" title="Refresh Page"/>
+                    <apex:outputPanel style="color:#4AA02C;font-weight:bold">
+                        <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
+                    </apex:outputPanel>
+                </apex:panelGrid>
+
+            </apex:pageBlockSection>           
+        </apex:pageBlock>
+    </apex:form>
+    
+    <script>
+        function checkAll(cb)
+        {
+            var inputElem = document.getElementsById("input");
+            for(var i=0; i<inputElem.length; i++)
+            {
+                if(inputElem[i].id.indexOf("checkedone")!=-1)
+                inputElem[i].checked = cb.checked;
+            }
+        }
+    </script>
+</apex:page>

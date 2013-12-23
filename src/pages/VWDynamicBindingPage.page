@@ -1,0 +1,21 @@
+<apex:page standardController="Contact" extensions="VWDynamicBindingExtn">
+    
+    <apex:pageMessage detail="This page uses diff. ways to access fields and objects dynamically" severity="error"></apex:pageMessage>    
+    
+    <style>.oddRows{background-color:#FFFF00} .evenRows{background-color:CYAN}</style>
+    
+    <apex:pageBlock title="Contact-Account fields">
+        <apex:pageBlockSection title="Contact - Read, Account - Edit">
+            <apex:form >
+                <apex:repeat value="{!allContactFields}" var="conField">
+                    <h2>{!conField}</h2>           <br/>
+                    <apex:inputField value="{!contact[conField]}" rendered="true"/><br/>
+                    <apex:outputField value="{!contact[conField]}" rendered="true"/>
+                
+                </apex:repeat>
+            </apex:form>
+        </apex:pageBlockSection>            
+    </apex:pageBlock>
+    
+
+</apex:page>

@@ -1,0 +1,85 @@
+<apex:page controller="BCProductsViewCon" readonly="True">
+	<style>
+		.bctable{
+			border-collapse: separate;
+			border-image-outset: 0px;
+			border-image-repeat: stretch;
+			border-image-slice: 100%;
+			border-image-source: none;
+			border-image-width: 1;
+			border-left-color: rgb(221, 221, 221);
+			border-left-style: solid;
+			border-left-width: 1px;
+			border-right-color: rgb(221, 221, 221);
+			border-right-style: solid;
+			border-right-width: 1px;
+			border-top-color: rgb(221, 221, 221);
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+			border-top-style: solid;
+			border-top-width: 1px;
+			color: rgb(49, 49, 49);
+			display: table;
+			font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			font-size: 14px;
+			font-style: normal;
+			font-variant: normal;
+			font-weight: normal;
+			height: 1140px;
+			line-height: 20px;
+			margin-bottom: 20px;
+			margin-left: 0px;
+			margin-right: 0px;
+			margin-top: 0px;
+			min-width: 921px;
+			padding-bottom: 0px;
+			padding-left: 10px;
+			padding-right: 10px;
+			padding-top: 10px;
+			vertical-align: baseline;
+			width: 100px;
+			word-wrap: break-word;
+			font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+		}
+	</style>
+    <apex:outputText value="Welcome to your own Organic Store !!" style="font-size:24px; font-weight:bold;"></apex:outputText><br/><br/>
+    <apex:form >
+        <table id="filterViewId">
+            <tr>                    
+                <td>
+                    <span></span> 
+                    View: 
+                </td>                
+                <td>
+                    <span></span>
+                    <apex:selectList value="{!resourceSelected}" size="1" onchange="refreshResource(fetchResource());">
+                        <apex:selectOptions value="{!resources}"/>                    
+                    </apex:selectList> 
+                </td> 
+            </tr>
+        </table>  
+	    <br/>
+	    <apex:actionFunction name="refreshResource" action="{!justRefresh}" rerender="resourcesPanel"/>        
+	    <apex:actionFunction name="fetchResource" action="{!fetchProductsFromFuture}" rerender="resourcesPanel"/>            
+    </apex:form>
+    <apex:outputPanel id="resourcesPanel">
+        <apex:dataTable value="{!productsFromFuture }" var="tempProduct" rendered="{! IF(resourceSelected == 'products',true,false)}" rowClasses="odd,even"
+            styleclass="bctable" >
+            <apex:column value="{!tempProduct.id}" headerValue="Product ID"/>
+            <apex:column value="{!tempProduct.name}" headerValue="Product Name"/>
+            <apex:column value="{!tempProduct.type}" headerValue="Product Type"/>
+            <apex:column value="{!tempProduct.price}" headerValue="Price"/>
+            <apex:column headerValue="Sync Status">            	
+            	<apex:image id="theImage" value="{!$Resource.SyncImage}" width="25" height="25" onclick="alert('Hola')" style="cursor:pointer"/>
+            </apex:column>
+            
+        </apex:dataTable>
+
+        <apex:dataTable value="{!customersList}" var="tempCustomer" rendered="{! IF(resourceSelected == 'customers',true,false)}">
+            <apex:column value="{!tempCustomer}" headerValue="BigCommerce Customer"/>
+        </apex:dataTable>
+
+    </apex:outputPanel>
+    
+</apex:page>

@@ -1,0 +1,8 @@
+<apex:page >
+    <apex:outputPanel >
+        Theme Assigned To User : <apex:outputText value="{!$User.UITheme}"/><br/>
+        Theme Displayed To User: <apex:outputText value="{!$User.UIThemeDisplayed}"/><br/>
+        <apex:outputText value="So we are good then..." rendered="{! IF($User.UITheme == $User.UIThemeDisplayed, true, false)}"> </apex:outputText><br/>
+        <apex:outputText value="omg ! you are supposed to see something different..." rendered="{! IF($User.UITheme != $User.UIThemeDisplayed, true, false)}"> </apex:outputText><br/>
+    </apex:outputPanel>
+</apex:page>

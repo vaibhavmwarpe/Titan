@@ -1,0 +1,58 @@
+<apex:page >
+    <style> 
+        .mainBodyStyleLeft{
+            font-size:24px;
+            position:absolute;
+            left:0px;
+            position:absolute;
+            width:1000px;
+           
+        }
+        
+        .mainBodyStylsRight{
+            font-size:29px;
+            font-color:GREEN;
+            position:absolute;
+            right:200px;
+            width:300px;
+            background-color:#b0e0e6;
+        }
+        
+        .headerStyle{
+            background-color:#b0e0e6;
+            font-size:40px;
+            color:RED;                        
+            vertical-align:top;            
+            width:100%;     
+            
+        }        
+        
+        .footerStyle{
+            font-size:16px;
+            font-color:BLUE;
+            position:absolute;
+            vertical-align:bottom;
+            bottom:0px;
+            width:100%;
+            text-align:center;
+            background-color:#123ds3;   
+        }
+    </style>
+    <!--apex:stylesheet value="http://developer.force.com/workbooks/vfdemo.css"-->
+    <apex:outputPanel styleClass="headerStyle">      
+        <apex:insert name="siteHeader"></apex:insert>        
+    </apex:outputPanel>
+    
+    <apex:outputPanel styleClass="mainBodyStyleLeft">      
+        <apex:insert name="siteMainBofyLeft"></apex:insert>
+    </apex:outputPanel>   
+     
+    <apex:outputPanel styleClass="mainBodyStylsRight">    
+        <apex:insert name="siteMainBofyRight"></apex:insert>
+    </apex:outputPanel>    
+   
+    <apex:outputPanel styleClass="footerStyle">    
+        <apex:insert name="siteFooter"></apex:insert>        
+    </apex:outputPanel>
+    
+</apex:page>

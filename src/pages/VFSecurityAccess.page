@@ -1,0 +1,19 @@
+<apex:page controller="VFContactExtn">
+    <apex:pageBlock >
+        Total Contacts: {!currentContactsCount}
+        <apex:pageBlockTable value="{!contactsList}" var="tempContact">
+            <apex:column >
+                <apex:outputLink value="/{!tempContact.Id}">{!tempContact.Id}</apex:outputLink>
+            </apex:column>
+            <apex:column value="{!tempContact.name}"/>
+            <apex:column value="{!tempContact.MobilePhone}"/>
+            <apex:column value="{!tempContact.AccountId}"/>
+            <apex:column value="{!tempContact.Department}"/>
+            <apex:column value="{!tempContact.Email}"/>
+            <apex:column value="{!tempContact.LeadSource}"/>
+            
+            
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+</apex:page>

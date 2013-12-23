@@ -1,0 +1,578 @@
+<apex:page controller="TwilioSoftphoneController" sidebar="false" showHeader="false" ><!--action = {!checkSingleClient}-->    
+    
+    <!-- Required Javascripts -->
+    <apex:includeScript value="{!$Resource.jquery1_9_1}"/>                           <!-- http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js-->
+    <apex:includeScript value="{!$Resource.jqueryui_1_10_2_custom}"/>                <!-- http://code.jquery.com/ui/1.10.2/jquery-ui.js-->   
+    <apex:includeScript value="{!$Resource.jquery_corner_js}"/>                      <!-- https://raw.github.com/malsup/corner/master/jquery.corner.js-->
+    <apex:includeScript value="{!$Resource.bPopUpJS}"/>                 
+    <apex:includeScript value="{!$Resource.twilio_min_js}"/>                         <!-- static.twilio.com/libs/twiliojs/1.1/twilio.min.js-->    
+    <script type="text/javascript" src="//static.twilio.com/libs/twiliojs/1.1/twilio.min.js"></script> 
+    
+    <!-- Required Styles --> 
+    <apex:stylesheet value="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"/>          
+    <apex:stylesheet value="{!$Resource.softphoneStyles}"/>
+    <apex:stylesheet value="{!$Resource.jqueryUIStyles}"/>
+  
+    <!-- Twilio Softphone JS APIs -->
+    
+    <script type="text/javascript">
+        var isInCall = false;
+        var callerName = '';
+        $(document).ready(function(){
+            
+            Twilio.Device.setup("{!token}", {debug: true});
+   
+            Twilio.Device.ready(function (device) {
+                $('#status').text('Ready');
+            });
+            
+            Twilio.Device.incoming(function (conn) {
+                var caller =  conn.parameters.From ;                   
+                var incomingAlertString = 'You have an incoming call from ';                
+                    
+                  Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.TwilioSoftphoneController.getCallersName}',
+                        caller , 
+                        function(result, event){        
+                                         
+                                if (event.status) {
+                                    
+                                    if(result && result.length == 1 ){ 
+                                        caller = result[0].Name;     
+                                        $('#status').html(incomingAlertString +'<br/>'+ result[0].Name); 
+                                        callerName = result[0].Name;
+                                        
+                                        
+                                   }else{
+                                       
+                                       $('#status').html(incomingAlertString + caller );         
+                                   }
+                               }
+                                    
+                            }, {escape: true}
+                        );   
+                
+                
+                $("input[id$='tocall']").val(conn.parameters.From);                
+                
+                $("#incomingControlButtonsDiv").show();                
+                $("#outgoingControlButtonsDiv").hide();                
+                                
+                $("#incomingCallButton").click(function () {  
+                     //alert('====connection is======' + conn.status());
+                     if(conn.status() == "pending") {     
+                                              
+                         conn.accept();               
+                         // if picked up, update custom setting so that others can read it and gets disconnected
+                         isInCall = true;
+                         $('#status').text("On Call : " + callerName ); 
+                         $("#softphone").css("background-color", "#F6E8EA");
+                         $("#messageDiv").css("background-color", "#F6E8EA");
+                
+                    } else if(conn.status() == "open") {
+                         // do nothing then, if connection is already open i.e. call is accepted
+                    }else {
+                        //$('#status').text("Call"); 
+                        window.location.reload();
+                    }
+                });
+                
+                $("#incomingCallRejectButton").click(function () {                            
+                     conn.reject();          
+                     Twilio.Device.disconnectAll();   
+                     $('#status').text("Call ended"); 
+                     window.location.reload();   
+
+                });                               
+               
+               setTimeout(function() {
+                      if(isInCall== false){
+                            window.location.reload();
+                      }
+                }, 60000);
+               
+            });
+            
+            Twilio.Device.offline(function (device) {
+                $('#status').text('Offline');
+            });
+            
+            Twilio.Device.error(function (error) {
+                $('#status').text(error);
+            });
+            
+            Twilio.Device.connect(function (conn) {
+                //$('#status').text("Connection Established");
+                if(callerName != ''){
+                    $('#status').text("On Call : " + callerName ); 
+                } else {
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.TwilioSoftphoneController.getCallersName}',
+                        $("input[id$='tocall']").val() , 
+                        function(result, event){
+                                if (event.status) {
+                                    //alert('===result ===' + result[0].name );                                    
+                                    if(result && result.length == 1 ){
+                                        $('#status').text("On Call : " + result[0].Name);                                        
+                                        //$('#status').text("On Call : " + '<a href=www.google.com>' +result[0].Name +'</a>');                                      
+                                   }else{
+                                        $('#status').text("On Call : " + $("input[id$='tocall']").val());   
+                                   }
+                               }
+                                    
+                            }, {escape: true}
+                        );                                           
+                }    
+                $("#softphone").css("background-color", "#F6E8EA");             
+                $("#messageDiv").css("background-color", "#F6E8EA");
+            });
+            
+            Twilio.Device.disconnect(function (conn) {
+                $('#status').text("Call ended");                              
+                window.location.reload();
+            });
+            
+            Twilio.Device.presence(function(presenceEvent) {
+                $('#presenceDiv').text("Presence Event: " + presenceEvent.from + " " + presenceEvent.available);
+            });
+            
+            
+            $.each(['0','1','2','3','4','5','6','7','8','9','star','pound'], function(index, value) {
+                $('#button' + value).click(function(){
+                    $("input[id$='tocall']").val($("input[id$='tocall']").val() + value);
+                    showResultRecordsJS();
+                });
+                
+                
+            });
+            
+             $("#dialpad9dots").click(function () {
+                                
+                $("#dialpad").slideToggle("slow");
+                
+            });
+            
+             $("#showsmsid").click(function () {
+                                 
+                $("#messageDiv").slideToggle("slow");
+                
+            });
+            
+            $("#shownotesid").click(function () {
+                            
+                $("#Notediv").slideToggle("slow");
+                
+            }); 
+            
+            $('input[name^="recordPhone_"]').click(function () {
+                //alert('clicked...');
+                //$("#showRecordLinkId").toggle();
+                
+            });
+            
+            $( "#softphone" ).corner(); 
+            $( "#messageDiv" ).corner();             
+            $("input").corner();   
+               
+            popMeUP(); 
+
+            //$(window).on('beforeunload', function(){ alert('bbye'); unregisterAF();});        
+
+        });
+        
+        function blinking(elm) {
+            timer = setInterval(blink, 1000);
+            function blink() {
+                elm.fadeOut(400, function() {
+                   elm.fadeIn(400);
+                });
+            }
+        }
+        
+        function callNow() {
+            // get the phone number to connect the call to
+            params = {"PhoneNumber": $("input[id$='tocall']").val()};
+            
+            Twilio.Device.connect(params);
+        }
+        function hangup() {
+            
+            Twilio.Device.disconnectAll();
+            hangupAF();
+        }
+        
+        function clearNumber(){
+            
+            var currentValue = $("input[id$='tocall']").val();
+            //$("#softphone").css("background-color", "#F6E8EA");               
+            $("input[id$='tocall']").val(currentValue.slice(0,-1) );
+            $('#recordIdLink').val('');
+            showResultRecordsJS();       
+        }
+        
+        function clearMessageJS(){
+            $("textArea[id$='smsMessageId']").val('');
+        }
+        
+        function cancelMessageJS(){
+            $("#messageDiv").slideToggle("slow");
+        }       
+                
+        function call() {
+            //alert('=======Twilio.Device.status()====' + Twilio.Device.status());
+            // get the phone number to connect the call to
+            var phoneNumber = $("input[id$='tocall']").val();
+            if(phoneNumber.length > 0) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.TwilioSoftphoneController.isValidPhoneNumber}',
+                    phoneNumber, 
+                    function(result, event){                   
+                            if (event.status) {
+                                if(result){
+                                    if(Twilio.Device.status() == 'ready') {                
+                                        params = {"PhoneNumber": $("input[id$='tocall']").val()};                                    
+                                        Twilio.Device.connect(params);   
+                                        //alert('=======Twilio.Device.status()====' + Twilio.Device.status());                                 
+                                    }else {
+                                        //$('#status').text("Device Is Busy");                                
+                                    }
+                                }else{
+                                    alert('Please Provide A Valid Phone Number');
+                                }
+    
+                            }else {
+                                
+                            }
+                                
+                        }, {escape: true}
+                    );
+                
+           }else{
+               alert('Please provide recipient\'s number');
+           }
+        }
+        
+        function popMeUP(){
+            
+            $( "#softphone" ).bPopup({
+                modalClose: false,
+                escClose : false,
+                follow: [false, false], //x, y
+                position: [0, 0] //x, y
+             });
+            /*$( "#softphone" ).bPopup();*/            
+        
+        }
+
+        function mute(){            
+            //.attr("disabled", "disabled");
+        }
+        
+        function sendSMSJS(){
+            var phoneNumber = $("input[id$='tocall']").val();            
+
+            if($("textArea[id$='smsMessageId']").val() == ''){
+                alert('You have not typed anything as message text');
+            } else if ($("input[id$='tocall']").val() == ''){
+                alert('Please provide recipient\'s number');
+            }
+            else{                        
+                  
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.TwilioSoftphoneController.isValidPhoneNumber}',
+                    phoneNumber, 
+                    function(result, event){                   
+                            if (event.status) {
+                                if(result){                                                               
+                                     sendSMSAF($("input[id$='tocall']").val(), $("textArea[id$='smsMessageId']").val());
+                                     alert('Message has been submitted successfully');                
+                                     $("textArea[id$='smsMessageId']").val('');                                                            
+                                    
+                                }else{
+                                    alert('Please Provide A Valid Phone Number');
+                                }    
+                            }
+                                
+                        }, {escape: true}
+                    );
+               
+            }
+        }
+ 
+        
+        $(function() {
+            $( "#softphone" ).draggable();
+         });
+             
+        
+        function allowIncomingJS(){            
+            regenerateTokenAF();
+        }        
+        
+        function getCallersNameJS(){
+        //var caller = '+918237642349';
+            var incomingAlertString = 'You have an incoming call from ';
+            //alert(incomingAlertString );
+             Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.TwilioSoftphoneController.getCallersName}',
+                caller , 
+                function(result, event){        
+                        //alert('=========event.status=====' + event.status );           
+                        if (event.status) {
+                            
+                            if(result && result.length == 1 ){ 
+                                caller = result[0].Name;     
+                                $('#status').html(incomingAlertString +'<br/>'+ result[0].Name); 
+                                
+                           }else{
+                               $('#status').html(incomingAlertString + caller );         
+                           }
+                       }
+                            
+                    }, {escape: true}
+                );      
+                
+        } 
+        function saveNotesJS(){           
+            
+            var phoneNumber = $("input[id$='tocall']").val();
+            var notesTitle  = $("textArea[id$='notestitle']").val();
+            var notesBody   = $("textArea[id$='notesbody']").val();            
+            
+            if(phoneNumber == '')
+                alert('Please Provide PhoneNumber');                
+            else if(notesTitle == '')
+                alert('Please Provide Title To The Notes. It Is Required');
+            else{
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.TwilioSoftphoneController.saveNotes}',
+                    phoneNumber , notesTitle, notesBody,
+                    function(result, event){       
+                                       
+                            if (event.status) {
+                                                            
+                                if(result){ 
+                                    alert('Notes Added successfully');
+                                    clearNotesJS();
+                                    
+                               }else{
+                                   alert('Notes can only be attached iff you provide a valid phone number of Contact/lead. Please check if phone number again');
+                                   //$('#status').html(incomingAlertString + caller );         
+                               }
+                           }
+                                
+                        }, {escape: true}
+                    );   
+                    
+                                 
+               } 
+               
+        }
+
+        function clearNotesJS(){
+             $("textArea[id$='notesbody']").val('');
+             $("textArea[id$='notestitle']").val('');
+        }    
+        
+        function cancelNotesJS(){
+            $("#Notediv").slideToggle("slow");
+        }                                       
+    </script>
+    
+    <!-- To Show Auto-Search Results When Number/ Name Is Being Typed -->
+    <script>
+        function showResultRecordsJS(){
+            
+            var recordMap = {};
+            var phoneNumber = $("input[id$='tocall']").val();
+            if( phoneNumber.length >= 3 && phoneNumber.length <= 20) {
+                
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.TwilioSoftphoneController.getSFRecord}',
+                    phoneNumber, 
+                    function(result, event){
+                       
+                        if (event.status) {
+                            if(result != null){
+                                
+                                recordMap = result;
+                                var i = 1;
+                                var searchResultString = '';
+                                for(var i=0; i<result.length; i++){   
+                                    searchResultString = searchResultString + "<div class='searchResultParentDiv'><div>" + recordMap[i].Name + "&nbsp;&nbsp<br/>" ;
+                                    if(recordMap[i].Phone_E164__c  != undefined)
+                                        searchResultString  += "<div class='searchResultCss' onclick='showNumber(this)' id='recordPhone_" +  i + "'>" + recordMap[i].Phone_E164__c  + "</div>&nbsp;&nbsp<br/>" 
+                                    if(recordMap[i].Mobile_E164__c  != undefined)                 
+                                        searchResultString  += "<div class='searchResultCss' onclick='showNumber(this)' id='recordMobile_" +  i + "'>" + recordMap[i].Mobile_E164__c  + "</div>&nbsp;&nbsp<br/>"
+                                                                                    
+                                    searchResultString  += "<div class='hiddenDiv' id='recordId_" +  i + "'>" + recordMap[i].Id+ "</div>"                                                                                     
+                                    searchResultString  += "</div></div>";                                                                        
+                                }    
+                                
+                                var resultsString =''; 
+                                //alert('===result is not null====' + searchResultString );
+                                $('#recordsDetailsDiv').html(searchResultString)
+                                //$('#recordsDetailsDiv').scroll();
+                                    //.append("<div style='font-weight:bold'>" + searchResultString +  "</div>");                                    
+                                    
+                            }                           
+                            else{
+                                alert('===== No result ===');
+                                $('#recordsDetailsDiv').html('');
+                            }
+                        } else if (event.type === 'exception') {
+                            // show event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            alert('===== An exception occurred ========'+ event.message + '=====here=====' + event.where);
+                            
+                        } else {
+                             alert('===== SORRY NO CONTACT FOUND ========');
+                        }
+                      
+                    }, 
+                    {escape: true}
+                );
+            } else {
+                 
+                 $('#recordsDetailsDiv').html('');
+            
+            }
+        }
+        
+        function showNumber(phoneNumberDiv) {
+
+            var phoneId = $(phoneNumberDiv).attr('id');            
+            var lastChar = phoneId.charAt(phoneId.length - 1 );
+            
+            $('#recordIdLink').val($('#recordId_'+lastChar).text());
+            $("input[id$='tocall']").val($(phoneNumberDiv).text());
+            recordsDetailsDiv.innerHTML = '';
+            //$("#showRecordLinkId").toggle();
+            
+        }
+        
+        function showRecordDetails(){          
+           if($('#recordIdLink').val()!='' && $("input[id$='tocall']").val() != ''){
+               window.open('/'+$('#recordIdLink').val(),'_blank');
+               window.focus();
+            } else {
+                alert('Can\'t Find A Record Associated With Provided Phone Number');
+            }              
+        }      
+
+    </script>
+    
+    <apex:form >
+    
+        <apex:pageMessages id="pgMsg"></apex:pageMessages>
+        
+        <apex:actionFunction name="hangupAF" action="{!hangupAction}" rerender="softphone"/>
+        
+        <apex:actionFunction name="sendSMSAF" action="{!sendSMS}" rerender="softphone">
+            <apex:param name="calleeNumParam" value="" assignTo="{!phoneNumber}"/>
+            <apex:param name="smsMessage" value="" assignTo="{!smsMessage}"/>
+        </apex:actionFunction>        
+                
+        <!--apex:actionFunction name="regenerateTokenAF" action="{!regenerateCapabilityToken}"-->
+        
+        <div id="softphone" style="width:220px;margin-left:-10px;margin-top:0px;" align="center"> <br/>
+     
+            <div id="calldivid" class="spsection"> -------- VOICE --------</div> <br/>
+            
+            <div id="status">Offline</div>                  
+            
+            <apex:inputText styleClass="disableDOM" id="tocall" value="{!phoneNumber}" style="width:150px;height:22px;text-align:center;font-size:16px;" onkeyup="showResultRecordsJS();" onclick="showResultRecordsJS();" title="Phone Number"/>  
+            <input type="image" src="{!$Resource.ClearButton}" id="clearPhbutton" class="clear" onClick="clearNumber();" height="20px" width="20px" style="margin-top:5px;" title="Clear"/>                        
+            
+            <div id="recordsDetailsDiv" align="left" style="margin-left: 50px;"></div>
+            
+            <div height="5px" style="margin:5px" id="outgoingControlButtonsDiv">
+                <input type="image" src="{!$Resource.Call_Button}" id="callbutton" onClick="call();" height="25px" width="35px" title="Call"/>            
+                <input type="image" src="{!$Resource.DialPad9Dots}" id="dialpad9dots" class="spsection9dots" height="25px" width="35px" title="DialPad"/>  
+                <input type="image" src="{!$Resource.Hangup_Button}" id="hangupbutton" onclick="hangup();" height="28px" width="35px" title="Hang up"/> 
+            </div>
+            
+            <div height="5px" id="incomingControlButtonsDiv" style="display: none;margin:5px">
+                <input type="image" src="{!$Resource.Call_Button}" id="incomingCallButton" class="incomingCallButton" height="25px" width="35px" title="Accept"/>             
+                <input type="image" src="{!$Resource.Hangup_Button}" id="incomingCallRejectButton" class="incomingCallRejectButton" height="28px" width="35px" title="Reject"/>             
+            </div>
+            
+            <!--a href="" id="showRecordLinkId" class="showRecordLinkId" onClick="showRecordDetails();" style="cursor:pointer;"Salesforce Recorda-->
+            
+            <div id="dialpad" style="display: none;margin-top:5px">
+                <table>
+                    <tr>
+                        <td><input type="button" value="1" id="button1" class="dial-button"/></td>
+                        <td><input type="button" value="2" id="button2" class="dial-button"/></td>
+                        <td><input type="button" value="3" id="button3" class="dial-button"/></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="4" id="button4" class="dial-button"/></td>
+                        <td><input type="button" value="5" id="button5" class="dial-button"/></td>
+                        <td><input type="button" value="6" id="button6" class="dial-button"/></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="7" id="button7" class="dial-button"/></td>
+                        <td><input type="button" value="8" id="button8" class="dial-button"/></td>
+                        <td><input type="button" value="9" id="button9" class="dial-button"/></td>
+                    </tr>
+                    <tr>
+                        <td><input type="button" value="*" id="buttonstar" class="dial-button"  disabled="true"/></td>
+                        <td><input type="button" value="0" id="button0" class="dial-button"/></td>
+                        <td><input type="button" value="#" id="buttonpound" class="dial-button"  disabled="true"/></td>
+                    </tr>
+                </table>
+            </div>
+           
+            <div id="showsmsid" class="spsection" style="margin-top:5px" title="Click To Open SMS Panel"> --------- SMS ---------</div>
+            
+            <div id="messageDiv" style="display:none;margin-left:0px;margin-top:10px">
+                <apex:inputTextarea id="smsMessageId" value="{!smsMessage}" rows="6" style="resize:none;width:150px;" title="SMS body"/><br/>                
+                <apex:commandButton value="Send" onclick="sendSMSJS();" title="Click To Send Message"/>                  
+                <apex:commandButton action="{!clearMessage}" value="Clear" onclick="clearMessageJS();" title="Click To Clear Message"/>
+                <apex:commandButton action="{!cancel}" value="Cancel"  onclick="cancelMessageJS();" title="Click To Cancel"/>
+            </div>         
+            
+            <div id="shownotesid" class="spsection" style="margin-top:5px;margin-bottom:10px" title="Click To Open Notes Panel"> -------- NOTES --------</div>
+            
+            <div id="Notediv" style="display:none;margin-left:0px;margin-top:10px;margin-bottom:10px">
+                <table border="0" cellspacing="0" align="center">
+                    <tr> <td class="headings">Title</td></tr>
+                    <tr> <td><textarea  type="text" id="notestitle" style="width: 180px;height:20px; align: right;resize:none;" title="Title For The Notes "/></td></tr>
+                    
+                    <tr> <td class="headings">Body</td> </tr>
+                    <tr> <td><textarea rows="4" cols="50" id="notesbody" style="width: 180px;align: center;resize:none;" title="Notes Body"/></td> </tr>
+                    
+                    <tr>
+                        <table border="0">
+                            <tr>                              
+                                <apex:commandButton value="Attach" onclick="saveNotesJS();" title="Attach"/>                  
+                                <apex:commandButton value="Clear" onclick="clearNotesJS();" title="Clear"/>
+                                <apex:commandButton value="Cancel"  onclick="cancelNotesJS();" title="Cancel"/>
+                            </tr>
+                        </table> 
+                    </tr>                         
+                </table>                  
+            </div>
+            
+        </div> <!-- Softphone ends-->       
+
+    </apex:form>
+    
+    <style>
+        .searchResultCss {
+            font-weight:bold;
+            color:red;
+            background-color:#CBE1EE;
+            display: inline-block;
+        
+        }
+        .searchResultCss:hover { background-color: ; cursor:pointer }
+        .hiddenDiv { display: none;visibility: hidden; } 
+        .visibleDiv { } 
+        .searchResultParentDiv {background-color: ;width:150px;align:left}
+        .disableDOM {disable:true}
+        .activeSP { background-color:#E2817B;}
+        .headings {font-weight: bold}
+    </style>
+
+</apex:page>

@@ -1,0 +1,82 @@
+<apex:page standardController="Account" extensions="VWdummyExtension" standardStylesheets="false" tabstyle="BigCommerce__tab">
+    <apex:form >
+
+        <apex:pageBlock title="Hello {!$User.FirstName}!" id="welcomeDOM" >
+            <apex:outputPanel style="cursor:pointer;" >
+            You are displaying contacts from the {!account.name} account. Click a contact's name to view his or her details.
+            <apex:actionSupport event="onclick" reRender="timesDOM" action="{!justRefresh}" immediate="true"/>
+            </apex:outputPanel>
+            <br/>
+            <apex:outputPanel style="cursor:pointer;" id="thePanel">
+                <apex:outputText value="Click Me! {!accountID}" style="text-shadow: 100px 50px 5px #e69ce6;filter: dropshadow(color=#e69ce6, offx=100, offy=50);"/>
+                <apex:actionSupport event="onmouseover" action="{!justRefresh}" rerender="thePanel" status="counterStatus"/>
+            </apex:outputpanel>
+            
+            <apex:actionStatus id="counterStatus" startText=" (incrementing...)" stopText=" (done)"/>
+           
+        </apex:pageBlock>
+    </apex:form>
+    <apex:outputPanel id="timesDOM">
+        
+        {!accountID }
+    </apex:outputPanel><br/><br/>
+    <apex:outputPanel id="actionstatusespanel">
+        <apex:actionStatus id="ajaxStatus" startText="Requesting Please Wait.." stopText="Done now...Enjoyyyyy...!!"></apex:actionStatus>
+        <apex:actionStatus id="ajaxStatus2" startText="For click event Requesting Please Wait.." stopText="Done now...Enjoyyyyy...!!">
+            <apex:facet name="start">
+                <apex:image value="{!$Resource.ProcessingImage}" height="50px" width="50px"/>
+            </apex:facet>
+        </apex:actionStatus>
+    </apex:outputPanel>
+    <apex:pageBlock title="Contacts" id="recordsDOM">
+        
+        <apex:form >
+            <apex:pageBlockTable value="{!contactsList}" var="contact" cellPadding="4" border="1" style="-webkit-border-radius: 100px 23px 43px 12px; border-radius: 100px 23px 43px 12px;">
+            
+                <apex:column >
+                    <apex:facet name="header">Click to change</apex:facet>
+                    <apex:commandLink rerender="contactDetailsDOM" status="ajaxStatus2">                       
+                        {!contact.Name}
+                        <apex:param name="cid" value="{!contact.id}"/>
+                    </apex:commandLink>
+                </apex:column>
+
+                <apex:column >      
+                    <apex:facet name="header">Hover to change</apex:facet>          
+                    <apex:commandLink rerender="contactDetailsDOM" status="ajaxStatus">{!contact.LastName}
+                        <apex:actionSupport event="onmouseover" id="moaction" reRender="contactDetailsDOM" >
+                            <apex:param name="cid" value="{!contact.id}"/>
+                        </apex:actionSupport>
+                    </apex:commandLink>
+                </apex:column>
+
+                <apex:column value="{!contact.MobilePhone}"/> 
+                
+                <apex:column >
+                    <apex:outputField value=" {!contact.Email}">
+                        <apex:inlineEditSupport event="ondblclick" />
+                    </apex:outputField>
+                    <apex:facet name="header">Email</apex:facet>   
+                </apex:column>
+                
+                <apex:column value="{!contact.account.name}"/> 
+                
+                <apex:column > 
+                    <apex:outputField value="{!contact.account.Industry}">
+                        <apex:inlineEditSupport event="ondblclick" />
+                    </apex:outputField>
+                </apex:column>
+            </apex:pageBlockTable>
+            <apex:commandButton action="{!edit}" value="Edit"/>
+        </apex:form>
+    </apex:pageBlock>
+    
+    <apex:outputPanel id="contactDetailsDOM">
+        <apex:actionStatus startText="Requesting...">
+            <apex:facet name="stop">
+                <apex:detail subject="{!$CurrentPage.parameters.cid}" relatedList="false" title="false"/>
+                
+            </apex:facet>
+        </apex:actionStatus>
+    </apex:outputPanel>
+</apex:page>

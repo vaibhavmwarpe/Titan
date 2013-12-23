@@ -1,0 +1,52 @@
+<apex:page >
+    <style>
+        //.container { color: green;}
+        li {color:black;}
+        .boldClass {font-weight: bold}        
+        .day{background:yellow;height:300px;}
+        .night{background:black;text:white;}
+    </style>
+    
+    <body>
+
+            
+            <button>Day</button>
+            <button>Night</button>     
+    
+
+    </body>
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> 
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script> 
+    <script type="text/javascript" src="https://raw.github.com/malsup/corner/master/jquery.corner.js"></script> 
+    
+        
+    <script>
+        alert('clicked!!');
+        
+        (function(){
+             alert('clicked!!');
+            ${'button').click( function(){
+                alert('clicked!!');
+              
+            });
+        
+        })();
+                
+        
+        
+        //$('ul.emphasis').children('li').css('color' , 'red'); // direct children
+        //$('ul.emphasis').children('li').addClass('boldClass'); // direct children
+        //$('ul.emphasis').children('li').eq(1).removeClass('boldClass'); // direct children
+                
+        //$('ul.emphasis').find('li').css('color' , 'red');   // all children    
+        
+        //$('ul.emphasis').children('li').eq(2).text('anything you like'); // change text of the div
+        
+        //$('#siteDetailPara').text('In the left pane, use the Setup menu to access all setup actions. The Setup menu includes tools for browsing and searching setup options.');
+        
+        
+    </script> 
+    
+    
+</apex:page>

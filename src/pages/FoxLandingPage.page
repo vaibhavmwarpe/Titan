@@ -1,0 +1,11 @@
+<apex:page controller="FoxUberController" standardStylesheets="false" sidebar="false">
+    <div style="border:1;color:red;">
+        <apex:image url="https://c.ap1.content.force.com/servlet/servlet.ImageServer?id=01590000002B9jW&oid=00D90000000irPU&lastMod=1381821985000" rendered="false"/>
+    </div>
+   
+    <apex:repeat value="{!allAccounts}" var="tempAccount">   
+        <c:FoxTile imageURL="{!tempAccount.ImageURL__c}" borderColor="red" objId="{!tempAccount.id}"/>
+        <apex:outputText value="{!tempAccount.Name} {!tempAccount.NumberOfEmployees}"></apex:outputText><br/>
+    </apex:repeat>
+    
+</apex:page>

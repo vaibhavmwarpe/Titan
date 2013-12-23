@@ -1,0 +1,74 @@
+<apex:page controller="VWAllJScon" tabStyle="Product2" >
+    <apex:includeScript value="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/>
+    <apex:form >
+        <apex:pageBlock title="Using JS in VF">
+            <apex:pageBlockSection title="Features: Action function, Param ">
+                <apex:outputPanel title="To use param in action function">
+                    <apex:outputLabel for="nameId" value="Please enter your name :"></apex:outputLabel>
+                    <apex:inputText id="nameId"/>           
+                    <apex:commandLink />                
+                                
+                    <apex:outputPanel onclick="showNameJS()" styleClass="btn"> Go!</apex:outputPanel>
+                    <apex:actionFunction action="{!showMyName}" name="shownameAF" rerender="greetingPanel">               
+                        <apex:param value="" name="theFirstParam" assignTo="{!myname}"/>
+                    </apex:actionFunction>
+                    
+                </apex:outputPanel><br/><br/>
+                <apex:outputPanel id="greetingPanel"> 
+                    <apex:outputText value="Hello there {!myname} !!"></apex:outputText>            
+                </apex:outputPanel> 
+            </apex:pageBlockSection>        
+            
+            <apex:pageBlockSection title="Features: JS remoting - Search for Contact ">
+                <apex:outputLabel for="contactnameId" value="Contact to be searched :"></apex:outputLabel>
+                <apex:inputText id="contactnameId"/>
+
+                <apex:outputLink onclick="searchContactJS();" >Search</apex:outputLink>
+
+                <apex:outputPanel id="searchResultsPanel">                    
+                    <apex:outputText id="resultTextId" value=""></apex:outputText> 
+                </apex:outputPanel>
+                
+            </apex:pageBlockSection>        
+        </apex:pageBlock>        
+
+    </apex:form>
+    
+    <script>
+        function searchContactJS(){
+            var contactName = $("input[id$='contactnameId']").val();
+            //alert('===con name========' + $("input[id$='contactnameId']").val());
+            //alert('==========' +          $("span[id$='resultTextId']").text());
+            
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.VWAllJScon.searchContactRA}',
+                contactName,
+                function(result, event){
+                                       
+                    if(event.status){
+                        //alert('=======result==========' + result);
+                        //$("input[id$='resultTextId']").val(result); 
+                        $("span[id$='resultTextId']").text('doneee!!');   
+                    }else if (event.type === 'exception') {
+                        alert('==exception=====event.message==========' + event.message);
+                    } else {
+                        alert('===else====event.message==========' + event.message);                        
+                    }
+                }, {escape: true}                             
+            )
+        }
+        function showNameJS(){
+            //alert('There you go !!' + $("input[id$='nameId']").val());
+            shownameAF($("input[id$='nameId']").val()  + ' ');
+        }
+        
+    </script>
+    <style>
+        .btn{
+            font-weight : bold:
+            width:100px;
+            backgroud-color : Gray;
+            margin-top : 25px;
+        }
+    </style>
+</apex:page>

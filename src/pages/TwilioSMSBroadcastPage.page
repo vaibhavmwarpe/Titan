@@ -1,0 +1,88 @@
+<apex:page controller="TwilioSMSBroadcastController" tabStyle="User">
+    <apex:pageMessages ></apex:pageMessages>      
+    
+    
+    <apex:pageBlock >
+    
+        <apex:pageBlockSection collapsible="true" title=" " rendered="false">   
+            <apex:outputText value="Selected Records Are Not Enabled To Receive An SMS"></apex:outputText>
+        </apex:pageBlockSection>
+        <apex:pageBlockSection collapsible="true" title="Selected Records">            
+            <apex:outputText value="**Note: Below Table Displays Records Which Are SMS Enabled"></apex:outputText><br/>
+            <apex:dataTable value="{!selectedContacts}" var="tempRecord" rendered="{!IF(whatType=='Contact', true,false)}" border="1" cellpadding="5" cellspacing="2">    
+                <apex:column headerValue="Name"><apex:outputField value="{!tempRecord.Name}" /> </apex:column>
+                <apex:column headerValue="Mobile Phone"><apex:outputField value="{!tempRecord.MobilePhone}" /> </apex:column>
+                <apex:column headerValue="Type"><apex:outputText value="Contact" /> </apex:column>        
+                  
+            </apex:dataTable> 
+            
+            <apex:dataTable value="{!selectedCampaignMembers}" var="tempRecord" rendered="{!IF(whatType=='CampaignMember', true,false)}" border="1" cellpadding="5" cellspacing="2">
+            
+                <apex:column headerValue="Name"><apex:outputField value="{!tempRecord.Twilio_CM_Name__c}" /> </apex:column>
+                <apex:column headerValue="Mobile Phone"><apex:outputField value="{!tempRecord.Twilio_Mobile__c}" /> </apex:column>
+                
+                <apex:column headerValue="Type"><apex:outputText value="Campaign Member" /> </apex:column>    
+            
+            </apex:dataTable>     
+            
+            <apex:dataTable value="{!selectedLeads}" var="tempRecord" rendered="{!IF(whatType == 'Lead', true,false)}" border="1" cellpadding="5" cellspacing="2">  
+                
+                <apex:column headerValue="Name"><apex:outputField value="{!tempRecord.Name}" /> </apex:column>
+                <apex:column headerValue="Mobile Phone"><apex:outputField value="{!tempRecord.MobilePhone}" /> </apex:column>
+                <apex:column headerValue="Type"><apex:outputText value="Lead" /> </apex:column> 
+             
+            </apex:dataTable>  <br/><br/>
+            
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection collapsible="true" title="SMS Message Contents" >
+            
+               <apex:form >      
+               
+                    <apex:actionFunction rerender="templatePanel,messageBodyPanel,buttonsPanel" name="checkBoxAF" action="{!checkBoxAction}" />
+                                                
+                    <apex:outputLabel value="Use A Template :"></apex:outputLabel> 
+                    <apex:inputCheckbox label="Template" selected="false" value="{!isTemplate}" onchange="checkBoxAF();" onfocus="checkBoxAF();" >    
+                                 
+                    </apex:inputCheckbox>
+                    
+                    <br/><br/>   
+                    <apex:outputPanel id="templatePanel">
+                        
+                        <apex:outputLabel value="Please Select A Template : "></apex:outputLabel> 
+                        <apex:selectList value="{!selectedTemplate}" size="1" disabled="{!IF (isTemplate, false, true)}" onchange="checkBoxAF();">
+                            <apex:selectOptions value="{!SMSTemplates}"/><br/>
+                        </apex:selectList>
+                    </apex:outputPanel>  <br/><br/>
+                    
+                    <apex:outputPanel id="messageBodyPanel">   
+                        <apex:outputLabel value="Message: "></apex:outputLabel><br/>
+                        <apex:inputTextarea value="{!smsMessage}" style="height:200px" disabled="{!IF (isTemplate, true, false)}" /><br/>                    
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel id="buttonsPanel">
+                        <apex:commandButton action="{!sendSMSToSelectedRecords}" value="Send"  />
+                        <apex:commandButton action="{!clearMessage}" value="Clear" disabled="{!IF (isTemplate, true, false)}"/>
+                        <apex:commandButton action="{!cancel}" value="Cancel" />
+                    </apex:outputPanel>
+                    
+                </apex:form>
+                          
+        </apex:pageBlockSection>
+  </apex:pageBlock>
+  <script>
+      function checkboxJS () {
+          //alert('yes');
+      }
+  
+  </script>
+  
+  <style>
+      .datatablestyle {
+          color:red;
+          border:1;
+          cellpadding:5;
+          cellspacing:2;
+      }
+  </style>
+</apex:page>

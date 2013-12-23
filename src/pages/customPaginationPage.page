@@ -1,0 +1,24 @@
+<apex:page controller="Example1">
+  <apex:form >
+      <apex:sectionHeader title="Pagination" subtitle="Hi"/>
+      <apex:pageBlock >
+          <apex:pageBlockSection >
+              <apex:pageBlockTable value="{!accInnerObj}" var="inner">
+                  <apex:column >
+                      <apex:inputCheckbox value="{!inner.isSelected}"/>
+                  </apex:column>
+                  <apex:column headerValue="Account">
+                      <apex:outputText value="{!inner.acc.Name}" />
+                  </apex:column>   
+              </apex:pageBlockTable>
+          </apex:pageBlockSection>
+      </apex:pageBlock>
+      <apex:outputPanel >{!selectedAccounts}</apex:outputPanel>
+      <br/>
+      <apex:commandButton value="<<Previous" action="{!previous}" disabled="{!IF(hasPrevious,false,true)}" />
+      <apex:commandButton value="Next >>" action="{!next}" disabled="{!IF(hasNext,false,true)}"/>
+      <apex:commandButton value="Get Selected" action="{!retrieveSelected}" />
+      
+     
+  </apex:form>
+</apex:page>

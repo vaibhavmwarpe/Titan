@@ -1,0 +1,11 @@
+<apex:page controller="VWDummyCon1">
+    <apex:flash src="http://www.google.co.in/url?sa=t&rct=j&q=&esrc=s&source=web&cd=2&ved=0CEoQuAIwAQ&url=http%3A%2F%2Fwww.longtailvideo.com%2Fjw-player%2Fabout%2F&ei=UhNcUqrpKoSPrQeimYGwDw&usg=AFQjCNEUajCI18UFCf7UbCSWGTKcvl-InA&bvm=bv.53899372,d.bmk&cad=rja"
+height="300" width="100%" /><br/>
+    <apex:outputPanel >
+        The time as per transient var is : {!transientTime} <br/><br/>
+        The time as per Non-transient var is : {!nontransientTime} <br/><br/>
+    </apex:outputPanel>
+    <apex:form >
+        <apex:commandButton value="refresh" immediate="true"/>
+    </apex:form>
+</apex:page>

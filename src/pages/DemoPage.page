@@ -1,0 +1,115 @@
+<apex:page controller="DemoController">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        function showAlert(){
+            
+            var recordMap = {};
+            var phoneNumber = $("input[id$='phId']").val();
+            if( phoneNumber.length >= 3 && phoneNumber.length <= 30) {
+                
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.DemoController.getSFRecord}',
+                    phoneNumber, 
+                    function(result, event){
+                       
+                        if (event.status) {
+                            if(result != null){
+                                recordMap = result;
+                                var i = 1;
+                                var searchResultString = '';
+                                for(var i=0; i<result.length; i++){       
+                                    searchResultString = searchResultString + "<div>" + recordMap[i].Name + "&nbsp;&nbsp" 
+                                                                                + "<div class='searchResultCss' onclick='showNumber(this)' id='recordPhone_" +  i + "'>" + recordMap[i].Phone + "</div>" 
+                                                                                + "<div class='hiddenDiv' id='recordId_" +  i + "'>" + recordMap[i].Id+ "</div>" 
+                                                                            + "</div>"; 
+                                    
+                                }    
+                                
+                                var resultsString =''; 
+                                
+                                $('#contactDetailsDiv').html(searchResultString)
+                                    //.append("<div style='font-weight:bold'>" + searchResultString +  "</div>");                                    
+                                    
+                            }                           
+                            else{
+                                //alert('===== No result ===');
+                                $('#contactDetailsDiv').html('');
+                            }
+                        } else if (event.type === 'exception') {
+                            // show event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                            alert('===== An exception occurred ========'+ event.message + '=====here=====' + event.where);
+                            
+                        } else {
+                             alert('===== SORRY NO CONTACT FOUND ========');
+                        }
+                      
+                    }, 
+                    {escape: true}
+                );
+            } else {
+                 
+                 $('#contactDetailsDiv').html('');
+            
+            }
+        }
+        
+        function showNumber(phoneNumberDiv) {
+
+            var phoneId = $(phoneNumberDiv).attr('id');
+            
+            var lastChar = phoneId.charAt(phoneId.length - 1 );
+            
+            //var a = $('#sRecordIdLink');
+            //a.href = $('#recordId_'+lastChar).text();
+            
+            $('#recordIdLink').val($('#recordId_'+lastChar).text());
+            $('#phId').val($(phoneNumberDiv).text());
+            contactDetailsDiv.innerHTML = '';
+            //alert('In ===== showNumber' + thisdiv.innerHTML);
+        }
+        
+        function showRecordDetails(){           
+           //self.focus();
+           window.open('/'+$('#recordIdLink').val(),'_blank');
+           //window.open(this.href,'_self');
+           //window.focus();
+           //openURL('/'+$('#recordIdLink').val(),2);
+        }
+        
+        function openURL(url, opt){
+          if (opt == 0){ // current window
+            window.location = url;
+          }else if (opt == 1){ // new window
+            window.open(url);
+          }else if (opt == 2){ // background window
+            window.open(url); self.focus();
+          }
+        }
+        
+
+    </script>
+    
+    <input id="phId" type="text" onkeyup="showAlert();"/>
+    
+    <input id="recordIdLink" type="text" class="hiddenDiv" />
+        
+    <a href="" id="getContactDetails" onclick="showRecordDetails();window.open(this.href,'_self');">Get Contact </a>
+    
+    <div id="contactDetailsDiv"> <!--style="background-color:#CBE1EE "-->        
+            
+    </div>
+   
+    
+    <style>
+        .searchResultCss {
+            font-weight:bold;
+            color:red;
+            background-color:#CBE1EE;
+            display: inline-block;
+        }
+        .searchResultCss:hover { background-color: cyan; }
+        .hiddenDiv { display: none;visibility: hidden; }
+    
+    </style>
+</apex:page>

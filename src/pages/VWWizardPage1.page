@@ -1,0 +1,38 @@
+<apex:page controller="VWWizardCon" tabStyle="Opportunity" >
+    <style>
+        .rightalign{
+            margin-right:50px;
+        }
+    </style>
+    <script type="text/javascript">
+        function showConfirm(){
+            var isConfirmed = confirm('Do you really want to cancel ??');
+            return isConfirmed;
+        }
+    </script>
+ 
+    <apex:sectionHeader title="New opportunity wizard" subtitle="Step 1 of 3"/>
+        <apex:form >
+            <apex:pageBlock >                
+    
+                <apex:pageBlockButtons location="bottom" >
+                    <apex:commandButton value="Save" action="{!save}" style="position:inherit;top:30px;right:25px;"/>    
+                    <apex:commandButton value="Cancel" action="{!cancel}" onclick="return showConfirm();" immediate="true"/>            
+                    <apex:commandButton value="Next" action="{!step2}"/>            
+                </apex:pageBlockButtons>
+                
+                <apex:pageBlockSection title="Account information" collapsible="false">
+                    <apex:inputField value="{!account.name}" label="Account Name"/>
+                    <apex:inputField value="{!account.site}" label="Site"/>
+                    <apex:inputField value="{!account.description}" label="Description"/>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection title="Contact information" columns="1">
+                    <apex:inputField value="{!contact.firstName}"/>                      
+                    <apex:inputField value="{!contact.lastName}"/>                      
+                    <apex:inputField value="{!contact.phone}"/>                                          
+                </apex:pageBlockSection>   
+            
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,41 @@
+<apex:page controller="VWWizardCon" >
+    <script type="text/javascript">
+        function showConfirm(){
+            var isConfirmed = confirm('Do you really want to cancel ??');
+            return isConfirmed;
+        }
+    </script>
+ 
+    <apex:sectionHeader title="New opportunity wizard" subtitle="Step 3 of 3"/>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!step2}" value="Previous"/>
+                <apex:commandButton value="Cancel" action="{!cancel}" onclick="return showConfirm();" immediate="true"/>                            
+                <apex:commandButton action="{!save}" value="Save"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Account info">
+                <apex:outputField value="{!account.name}" label="Account Name"/>
+                <apex:outputField value="{!account.site}" label="Site"/>
+                <apex:outputField value="{!account.description}" label="Description"/>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Contact info">  
+                <apex:outputField value="{!contact.firstName}"/>                      
+                <apex:outputField value="{!contact.lastName}"/>                      
+                <apex:outputField value="{!contact.phone}"/>                       
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Opportunity info">
+                <apex:outputField value="{!oppty.name}"/>
+                <apex:outputField value="{!oppty.LeadSource}"/>
+                <apex:outputField value="{!oppty.Description}"/>
+                <apex:outputField value="{!oppty.Amount}"/>
+                <apex:outputField value="{!oppty.Type}"/>            
+            </apex:pageBlockSection>
+        
+        </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

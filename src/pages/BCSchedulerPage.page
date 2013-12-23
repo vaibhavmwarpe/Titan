@@ -1,0 +1,13 @@
+<apex:page controller="BCSchedulerCon">
+    <apex:form >
+        <apex:outputPanel id="schedulerPanel">
+            <apex:outputLabel value="Bigcommerce Product Scheduler"></apex:outputLabel><br/>
+        </apex:outputPanel>
+        <apex:commandButton action="{!doSchedule}" value="Schedule" rerender="jobDetailsPanel"/><br/>
+        
+        <apex:outputPanel id="jobDetailsPanel" rendered="{!isJobCreateSuccess}">
+            Here is a job id of your job : {!jobId}
+        </apex:outputPanel>
+        
+    </apex:form>
+</apex:page>

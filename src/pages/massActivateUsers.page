@@ -1,0 +1,78 @@
+<apex:page controller="MassActivateUsers"> 
+   <script>
+       function checkUserList(){
+           showUsers();
+           if(userli=='All'){
+               //alert('hi');
+           }
+       }
+   </script>
+    <apex:form >
+  
+        <apex:pageBlock title="User Details"> 
+            <table>
+                <tr>
+                <td class="labelCol">
+                    Select User View:
+                </td>
+                <td> 
+                    <apex:selectList value="{!userList}" size="1" >
+                    <apex:selectOptions value="{!Users}"/>
+                
+                    </apex:selectList>
+                 </td>
+                 <td>   
+                    <apex:selectList value="{!userRoleList}" size="1" >
+                        <apex:selectOptions value="{!UsersRole}"/>
+                
+                    </apex:selectList> 
+                 </td>
+                 <td>   
+                     <apex:selectList value="{!userProfileList}" size="1" >
+                        <apex:selectOptions value="{!UsersProfile}"/>
+                    </apex:selectList>
+                </td>
+                <td><input type= "button" value="Search" onclick="checkUserList(),showUsers()" class="btn"/></td>
+                </tr>
+            </table>
+            <apex:pageBlocksection >
+            
+            </apex:pageBlocksection> 
+           
+            <apex:outPutPanel id="user">
+            <script>
+            var userli = "{!userList}";
+            
+            </script>
+                {!userList}
+                <apex:messages />
+                <apex:message />
+                <apex:commandButton action="{!helperMasactivateUsr.DeactivateUsers}" value="Activate" id="active" rendered="{!userList='All Inactive Users'}"/>
+                <apex:commandButton action="{!helperMasactivateUsr.ActivateUsers}" value="Deactivate" id="deactive" rendered="{!userList='All Active Users'}"/>
+                <apex:outputpanel rendered="{!userList!='All'}">
+                    <apex:pageBlocksection title="User Results- Page #{!helperMasactivateUsr.pageNumber}" >
+                        <apex:pageblockTable value="{!helperMasactivateUsr.UsersList}" var="user">
+                            <apex:column headerValue="Select"><input type="checkbox"></input></apex:column>  
+                            <apex:column headerValue="Name"><apex:outPutField value="{!user.Name}"/></apex:column>
+                            <apex:column headerValue="User Profile"> <apex:outPutField value="{!user.Profile.Name}"/></apex:column>
+                            <apex:column headerValue="User Role" > <apex:outPutField value="{!user.UserRole.Name}"/></apex:column>
+                            <apex:column value="{!user.Email}"></apex:column>
+                            <apex:column headerValue="IsActive"><apex:inputField value="{!user.IsActive}" /> </apex:column>
+                        </apex:pageblockTable>
+                    </apex:pageBlocksection>
+                    
+                    <apex:panelGrid columns="4" id="showpaging" >
+                        <apex:commandLink action="{!helperMasactivateUsr.first}" rendered="{!helperMasactivateUsr.hasPrevious}">First</apex:commandlink>
+                        <apex:commandLink action="{!helperMasactivateUsr.previous}" rendered="{!helperMasactivateUsr.hasPrevious}">Previous</apex:commandlink>
+                        <apex:commandLink action="{!helperMasactivateUsr.next}" rendered="{!helperMasactivateUsr.hasNext}">Next</apex:commandlink>
+                        <apex:commandLink action="{!helperMasactivateUsr.last}" rendered="{!helperMasactivateUsr.hasNext}">Last</apex:commandlink>
+                    </apex:panelGrid>
+                    <apex:outputLabel rendered="{!helperMasactivateUsr.noRecordFoundMsg}" style="margin-left:20px"> No Record Found!</apex:outputLabel>
+                </apex:outputpanel>
+            </apex:outPutPanel>
+          
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="showUsers" action="{!viewUsersList}" reRender="user,a"/>  
+    </apex:form>
+</apex:page>
